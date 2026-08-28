@@ -1,0 +1,37 @@
+John Doe
+Data Scientist
+john.doe@email.com
++1 (415) 555-0199
+https://github.com/johndoe
+linkedin.com/in/johndoe
+
+SUMMARY
+Developed predictive models using Python and scikit-learn for customer churn.
+
+EDUCATION
+B.Tech in Computer Science
+State Institute of Technology
+2018 - 2022
+
+EXPERIENCE
+Machine Learning Engineer at Acme Analytics
+Jan 2022 - Present
+- Built classification models using Python, Pandas, and NumPy
+- Collaborated with product teams on production scoring pipelines
+
+Data Science Intern at Insight Labs
+Jun 2021 - Dec 2021
+- Analyzed survey data and created dashboards
+
+PROJECTS
+Churn Predictor
+- Trained a scikit-learn model to forecast customer churn
+
+SKILLS
+Python, Machine Learning, Pandas, NumPy, Scikit-learn, Communication
+
+CERTIFICATIONS
+AWS Cloud Practitioner
+
+ACHIEVEMENTS
+Dean's list for two consecutive years

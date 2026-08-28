@@ -1,0 +1,2 @@
+# Placeholder for optional local model artifacts.
+# Sentence-transformers and spaCy models are downloaded to the library cache, not this folder.

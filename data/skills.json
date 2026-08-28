@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "categories": {
+    "Programming": [
+      {"name": "Python", "aliases": ["python", "python3"]},
+      {"name": "Java", "aliases": ["java"]},
+      {"name": "C", "aliases": ["c language", " c "]},
+      {"name": "C++", "aliases": ["c++", "cpp"]},
+      {"name": "C#", "aliases": ["c#", "c sharp"]},
+      {"name": "JavaScript", "aliases": ["javascript", "js"]},
+      {"name": "TypeScript", "aliases": ["typescript", "ts"]},
+      {"name": "R", "aliases": ["r language"]},
+      {"name": "Go", "aliases": ["golang", "go language"]},
+      {"name": "SQL", "aliases": ["sql", "structured query language"]},
+      {"name": "Bash", "aliases": ["bash", "shell scripting", "shell"]}
+    ],
+    "AI/ML": [
+      {"name": "Machine Learning", "aliases": ["machine learning", "ml"]},
+      {"name": "Deep Learning", "aliases": ["deep learning", "dl"]},
+      {"name": "NLP", "aliases": ["nlp", "natural language processing"]},
+      {"name": "Computer Vision", "aliases": ["computer vision", "image processing"]},
+      {"name": "TensorFlow", "aliases": ["tensorflow", "tf"]},
+      {"name": "PyTorch", "aliases": ["pytorch", "torch"]},
+      {"name": "Keras", "aliases": ["keras"]},
+      {"name": "Scikit-learn", "aliases": ["scikit-learn", "scikit learn", "sklearn"]},
+      {"name": "Generative AI", "aliases": ["generative ai", "genai", "llm", "large language models"]},
+      {"name": "MLOps", "aliases": ["mlops", "ml ops"]},
+      {"name": "LangChain", "aliases": ["langchain"]},
+      {"name": "OpenAI API", "aliases": ["openai api", "openai"]}
+    ],
+    "Data": [
+      {"name": "Pandas", "aliases": ["pandas"]},
+      {"name": "NumPy", "aliases": ["numpy"]},
+      {"name": "Matplotlib", "aliases": ["matplotlib"]},
+      {"name": "Seaborn", "aliases": ["seaborn"]},
+      {"name": "Power BI", "aliases": ["power bi", "powerbi"]},
+      {"name": "Tableau", "aliases": ["tableau"]},
+      {"name": "Excel", "aliases": ["excel", "microsoft excel"]},
+      {"name": "Statistics", "aliases": ["statistics", "statistical analysis"]},
+      {"name": "Data Visualization", "aliases": ["data visualization", "data visualisation"]},
+      {"name": "ETL", "aliases": ["etl", "data pipeline"]}
+    ],
+    "Web": [
+      {"name": "HTML", "aliases": ["html", "html5"]},
+      {"name": "CSS", "aliases": ["css", "css3"]},
+      {"name": "React", "aliases": ["react", "reactjs", "react.js"]},
+      {"name": "Node.js", "aliases": ["node.js", "nodejs", "node"]},
+      {"name": "Express", "aliases": ["express", "express.js"]},
+      {"name": "FastAPI", "aliases": ["fastapi", "fast api"]},
+      {"name": "Django", "aliases": ["django"]},
+      {"name": "Flask", "aliases": ["flask"]},
+      {"name": "REST APIs", "aliases": ["rest api", "restful", "rest apis"]},
+      {"name": "Streamlit", "aliases": ["streamlit"]}
+    ],
+    "DevOps/Cloud": [
+      {"name": "Git", "aliases": ["git"]},
+      {"name": "GitHub", "aliases": ["github"]},
+      {"name": "Docker", "aliases": ["docker", "containerization"]},
+      {"name": "Kubernetes", "aliases": ["kubernetes", "k8s"]},
+      {"name": "AWS", "aliases": ["aws", "amazon web services"]},
+      {"name": "Azure", "aliases": ["azure", "microsoft azure"]},
+      {"name": "GCP", "aliases": ["gcp", "google cloud", "google cloud platform"]},
+      {"name": "CI/CD", "aliases": ["ci/cd", "continuous integration", "continuous deployment"]},
+      {"name": "Linux", "aliases": ["linux"]},
+      {"name": "Networking", "aliases": ["networking", "network security"]},
+      {"name": "Terraform", "aliases": ["terraform"]}
+    ],
+    "Databases": [
+      {"name": "MySQL", "aliases": ["mysql"]},
+      {"name": "PostgreSQL", "aliases": ["postgresql", "postgres"]},
+      {"name": "MongoDB", "aliases": ["mongodb", "mongo db"]},
+      {"name": "SQLite", "aliases": ["sqlite"]},
+      {"name": "Redis", "aliases": ["redis"]},
+      {"name": "Database Design", "aliases": ["database design", "data modeling", "data modelling"]}
+    ],
+    "Soft Skills": [
+      {"name": "Communication", "aliases": ["communication", "communicate"]},
+      {"name": "Leadership", "aliases": ["leadership", "led team"]},
+      {"name": "Problem Solving", "aliases": ["problem solving", "problem-solving"]},
+      {"name": "Teamwork", "aliases": ["teamwork", "collaboration", "collaborated"]},
+      {"name": "Time Management", "aliases": ["time management"]},
+      {"name": "Agile", "aliases": ["agile", "scrum"]},
+      {"name": "Stakeholder Management", "aliases": ["stakeholder management", "stakeholders"]}
+    ]
+  }
+}
