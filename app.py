@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import os
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -114,4 +115,13 @@ def not_found(_: Exception):
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    # Local development server configuration
+    # For production, use: gunicorn app:app
+    port = int(os.getenv("PORT", 5000))
+    debug = os.getenv("FLASK_ENV") == "development"
+    
+    app.run(
+        host="0.0.0.0",  # Listen on all interfaces for containers/VMs
+        port=port,
+        debug=debug,
+    )
