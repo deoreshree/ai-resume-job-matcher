@@ -3,86 +3,324 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Private, evidence-based resume and job matching.">
-    <title>AI Resume &amp; Job Match Predictor</title>
+    <meta name="description" content="Analyze your resume, match it with a target job, discover missing skills, and improve your chances of getting shortlisted.">
+    <title>AI Resume &amp; Job Matcher</title>
     <link rel="stylesheet" href="/static/css/style.css">
   </head>
   <body>
-    <div class="app-shell">
-      <aside class="sidebar">
-        <a class="brand" id="brand-link" href="#dashboard" aria-label="AI Resume Match home">
-          <span class="brand-mark">AI</span>
-          <span>Resume<span>Match</span></span>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <!-- Reusable inline SVG icon sprite (CSP-safe, no external requests) -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon-sprite" aria-hidden="true" focusable="false">
+      <symbol id="i-logo" viewBox="0 0 24 24"><path d="M12 2l2.4 5.4L20 9.5l-4 4.1.9 5.9L12 16.8l-4.9 2.7.9-5.9-4-4.1 5.6-2.1z"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+      <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+      <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></symbol>
+      <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></symbol>
+      <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.4 1 2.3h6c0-.9.4-1.8 1-2.3A7 7 0 0 0 12 2z"/></symbol>
+      <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+      <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></symbol>
+      <symbol id="i-code" viewBox="0 0 24 24"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></symbol>
+      <symbol id="i-grad" viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15"/></symbol>
+      <symbol id="i-key" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.8 7.8 5.5 5.5 0 0 1 7.8-7.8zm0 0L15.5 8.5m0 0l3 3L22 8l-3-3"/></symbol>
+      <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2 0-2.8-.8-.7-2-.7-3 0zM12 15l-3-3a22 22 0 0 1 2-3.9A14.9 14.9 0 0 1 21.5 2.5c0 4.6-2.4 8.3-5.6 10.5A22 22 0 0 1 12 15z"/><path d="M9 12H4s.5-3 2-4c1.6-1.1 5 0 5 0m2 7v5s3-.5 4-2c1.1-1.6 0-5 0-5"/></symbol>
+    </svg>
+
+    <header class="navbar" id="navbar">
+      <div class="container navbar-inner">
+        <a class="brand" href="#/home" aria-label="AI Resume and Job Matcher home">
+          <span class="brand-mark" aria-hidden="true"><svg class="icon"><use href="#i-logo"/></svg></span>
+          <span class="brand-text">AI Resume<span class="brand-accent">Match</span></span>
         </a>
-        <form id="analysis-form" class="setup-card" novalidate>
-          <div class="eyebrow">ANALYSIS SETUP</div>
-          <label class="input-label" for="resume">Resume file</label>
-          <label class="file-control" for="resume"><span>⌁</span><strong>Choose PDF or DOCX</strong><small>Processed in memory only</small></label>
-          <input id="resume" name="resume" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
-          <p id="file-name" class="file-name">No file selected</p>
 
-          <label class="input-label">Target input</label>
-          <div class="segmented" role="radiogroup" aria-label="Target input type">
-            <label><input type="radio" name="target_mode" value="role" checked><span>Job role</span></label>
-            <label><input type="radio" name="target_mode" value="custom"><span>Job description</span></label>
-          </div>
-          <div id="role-control">
-            <label class="input-label" for="job-role">Target role</label>
-            <select id="job-role" name="job_role" required><option>Loading roles…</option></select>
-          </div>
-          <div id="custom-control" hidden>
-            <label class="input-label" for="job-description">Job description</label>
-            <textarea id="job-description" name="job_description" rows="8" placeholder="Paste responsibilities, requirements, and preferred qualifications."></textarea>
-          </div>
-          <button id="analyse-button" class="primary-button" type="submit"><span>Analyse resume</span><span>→</span></button>
-          <p class="privacy-note">Your resume is never saved by this application.</p>
-        </form>
-        <nav class="navigation" aria-label="Dashboard sections">
-          <a class="nav-link active" data-view="dashboard" href="#dashboard"><span>⌂</span> Dashboard</a>
-          <a class="nav-link" data-view="resume" href="#resume"><span>▤</span> Resume analysis</a>
-          <a class="nav-link" data-view="match" href="#match"><span>◎</span> Job match</a>
-          <a class="nav-link" data-view="gap" href="#gap"><span>△</span> Skill gap</a>
-          <a class="nav-link" data-view="advice" href="#advice"><span>✦</span> AI recommendations</a>
-          <a class="nav-link" data-view="interview" href="#interview"><span>◌</span> Interview questions</a>
-          <a class="nav-link" data-view="ats" href="#ats"><span>▥</span> ATS analysis</a>
-          <a class="nav-link" data-view="about" href="#about"><span>i</span> About</a>
+        <nav class="nav-menu" id="nav-menu" aria-label="Primary">
+          <a class="nav-link" data-route="home" href="#/home">Home</a>
+          <a class="nav-link" data-route="resume" href="#/resume">Resume Analysis</a>
+          <a class="nav-link" data-route="match" href="#/match">Job Match</a>
+          <a class="nav-link" data-route="dashboard" href="#/dashboard">Dashboard</a>
+          <a class="nav-link" data-route="about" href="#/about">About</a>
         </nav>
-      </aside>
 
-      <main class="content">
-        <header class="topbar">
-          <div><p class="eyebrow">CAREER INTELLIGENCE</p><h1 id="page-title">Dashboard</h1></div>
-          <button id="report-button" class="secondary-button" type="button" disabled>↓ Download report</button>
-        </header>
-        <div id="notice" class="notice" role="status" hidden></div>
-        <section id="empty-state" class="empty-state">
-          <div class="empty-icon">↗</div>
-          <h2>See how your resume fits a role.</h2>
-          <p>Upload a PDF or DOCX, select a role or paste a job description, and receive an evidence-based match analysis.</p>
-          <div class="empty-features"><span>Skills &amp; ATS</span><span>Career guidance</span><span>Interview prep</span></div>
-        </section>
-        <section id="loading-state" class="loading-state" hidden><span class="spinner"></span><strong>Analysing your resume</strong><p>Extracting evidence, comparing role requirements, and preparing your insights.</p></section>
-
-        <div id="result-content" hidden>
-          <section class="view active" data-view-content="dashboard">
-            <div id="metrics" class="metrics-grid"></div>
-            <div class="visual-grid">
-              <article class="panel"><div class="panel-head"><div><p class="eyebrow">SCORE BREAKDOWN</p><h2>How your match is composed</h2></div></div><div id="score-breakdown" class="score-breakdown"></div></article>
-              <article class="panel fit-panel"><p class="eyebrow">SKILL COVERAGE</p><div id="skill-donut" class="donut"><div><strong>0%</strong><span>required skills</span></div></div><div id="skill-counts" class="skill-counts"></div></article>
-            </div>
-            <div class="two-column"><article class="panel"><p class="eyebrow">MATCHING SKILLS</p><h2>Evidence found</h2><div id="matching-skills" class="chips"></div></article><article class="panel"><p class="eyebrow">SKILL GAPS</p><h2>Skills to develop</h2><div id="missing-skills" class="chips"></div></article></div>
-          </section>
-
-          <section class="view" data-view-content="resume"><div class="section-heading"><p class="eyebrow">RESUME ANALYSIS</p><h2>Extracted candidate evidence</h2></div><div id="resume-content"></div></section>
-          <section class="view" data-view-content="match"><div class="section-heading"><p class="eyebrow">JOB MATCH</p><h2>Role requirements and score</h2></div><div id="match-content"></div></section>
-          <section class="view" data-view-content="gap"><div class="section-heading"><p class="eyebrow">SKILL GAP</p><h2>Focused learning opportunities</h2></div><div id="gap-content" class="stack"></div></section>
-          <section class="view" data-view-content="advice"><div class="section-heading"><p class="eyebrow">AI RECOMMENDATIONS</p><h2>Truthful ways to improve your fit</h2></div><div id="advice-content"></div></section>
-          <section class="view" data-view-content="interview"><div class="section-heading"><p class="eyebrow">INTERVIEW QUESTIONS</p><h2>Prepare with your actual experience</h2></div><div id="interview-content"></div></section>
-          <section class="view" data-view-content="ats"><div class="section-heading"><p class="eyebrow">ATS ANALYSIS</p><h2>Resume parsing compatibility</h2></div><div id="ats-content"></div></section>
-          <section class="view" data-view-content="about"><div class="about-card"><p class="eyebrow">ABOUT</p><h2>Private, explainable career support.</h2><p>This application processes a readable PDF or DOCX in memory, matches only evidence detected in that resume, and never asks you to add skills you do not have.</p><div class="about-grid"><div><strong>Private by default</strong><span>No resume file storage or contact-data logging.</span></div><div><strong>Explainable scoring</strong><span>Five visible components make up every match score.</span></div><div><strong>Offline capable</strong><span>Core features work without an LLM API key.</span></div></div></div></section>
+        <div class="nav-actions">
+          <button id="nav-report" class="btn btn-ghost btn-sm" type="button" hidden>
+            <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg><span>Report</span>
+          </button>
+          <a class="btn btn-primary btn-sm nav-cta" href="#/analyze">Analyze Resume</a>
+          <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle navigation menu">
+            <svg class="icon icon-menu" aria-hidden="true"><use href="#i-menu"/></svg>
+            <svg class="icon icon-close" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
         </div>
-      </main>
-    </div>
+      </div>
+    </header>
+
+    <main id="main" class="main">
+      <noscript><div class="container"><div class="notice notice-error">This application needs JavaScript enabled to analyze resumes.</div></div></noscript>
+
+      <!-- ============ HOME / LANDING ============ -->
+      <section class="view" id="view-home" data-route="home" aria-labelledby="home-title">
+        <div class="hero">
+          <div class="container hero-grid">
+            <div class="hero-copy">
+              <p class="eyebrow">Resume intelligence, explained</p>
+              <h1 id="home-title">AI Resume &amp; Job Matcher</h1>
+              <p class="hero-subtitle">Analyze your resume, match it with your target job, discover missing skills, and improve your chances of getting shortlisted.</p>
+              <div class="hero-actions">
+                <a class="btn btn-primary btn-lg" href="#/analyze">Analyze My Resume <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+                <a class="btn btn-outline btn-lg" href="#/match">Match With Job</a>
+              </div>
+              <ul class="hero-trust" aria-label="Privacy highlights">
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> No signup</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Processed in memory</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Works offline</li>
+              </ul>
+            </div>
+
+            <div class="hero-visual" aria-hidden="true">
+              <div class="mock-window">
+                <div class="mock-bar"><span></span><span></span><span></span></div>
+                <div class="mock-body">
+                  <div class="mock-resume">
+                    <div class="mock-doc">
+                      <div class="mock-line w-70"></div><div class="mock-line w-45"></div>
+                      <div class="mock-heading"></div>
+                      <div class="mock-line w-90"></div><div class="mock-line w-80"></div><div class="mock-line w-60"></div>
+                      <div class="mock-heading"></div>
+                      <div class="mock-line w-75"></div><div class="mock-line w-55"></div>
+                    </div>
+                    <div class="mock-arrow"><svg class="icon"><use href="#i-arrow"/></svg></div>
+                  </div>
+                  <div class="mock-result">
+                    <svg class="mock-ring" viewBox="0 0 120 120">
+                      <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+                      <circle class="ring-fill" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="52"></circle>
+                    </svg>
+                    <div class="mock-ring-label"><strong>84%</strong><span>match</span></div>
+                    <div class="mock-chips"><span class="chip chip-match">Python</span><span class="chip chip-match">SQL</span><span class="chip chip-gap">Docker</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container section">
+          <div class="section-head">
+            <p class="eyebrow">Features</p>
+            <h2>Everything you need to sharpen your application</h2>
+          </div>
+          <div class="feature-grid">
+            <article class="feature-card"><span class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg></span><h3>AI Resume Analysis</h3><p>Structured parsing of skills, experience, education, and projects from your PDF or DOCX.</p></article>
+            <article class="feature-card"><span class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg></span><h3>ATS Score</h3><p>See how readable and parseable your resume is for applicant tracking systems.</p></article>
+            <article class="feature-card"><span class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg></span><h3>Job Matching</h3><p>Paste any job description and get a transparent, weighted match score.</p></article>
+            <article class="feature-card"><span class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg></span><h3>Skill Gap Analysis</h3><p>Exactly which required skills you can evidence — and which to build next.</p></article>
+            <article class="feature-card"><span class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-bulb"/></svg></span><h3>AI Recommendations</h3><p>Honest, evidence-based improvements — never advice to overstate your experience.</p></article>
+            <article class="feature-card"><span class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg></span><h3>Interview Questions</h3><p>Technical, HR, resume-based, and job-specific questions generated from your profile.</p></article>
+          </div>
+        </div>
+
+        <div class="container section">
+          <div class="section-head">
+            <p class="eyebrow">How it works</p>
+            <h2>From upload to actionable insight in seconds</h2>
+          </div>
+          <ol class="steps" aria-label="How the analysis works">
+            <li class="step"><span class="step-num">1</span><svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg><h3>Upload Resume</h3><p>A readable PDF or DOCX, processed entirely in memory.</p></li>
+            <li class="step"><span class="step-num">2</span><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg><h3>AI Analysis</h3><p>Skills, experience, education, and ATS signals extracted.</p></li>
+            <li class="step"><span class="step-num">3</span><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg><h3>Job Matching</h3><p>Compared against a role catalog or your pasted description.</p></li>
+            <li class="step"><span class="step-num">4</span><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg><h3>Skill Gap</h3><p>Required versus evidenced skills, with coverage scores.</p></li>
+            <li class="step"><span class="step-num">5</span><svg class="icon" aria-hidden="true"><use href="#i-bulb"/></svg><h3>Recommendations</h3><p>Learning paths, resume fixes, and interview preparation.</p></li>
+          </ol>
+        </div>
+
+        <div class="container section">
+          <div class="cta-band">
+            <div><h2>Ready to improve your resume?</h2><p>Get a full, private analysis in under a minute — no account needed.</p></div>
+            <a class="btn btn-primary btn-lg" href="#/analyze">Start Analysis <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ANALYZE / UPLOAD ============ -->
+      <section class="view" id="view-analyze" data-route="analyze" aria-labelledby="analyze-title">
+        <div class="container">
+          <header class="page-head">
+            <div><p class="eyebrow">New analysis</p><h1 id="analyze-title">Analyze your resume</h1></div>
+          </header>
+
+          <div class="analyze-grid">
+            <form id="analysis-form" class="card upload-card" novalidate>
+              <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg> Upload your resume</h2>
+              <p class="muted">PDF or DOCX, up to 8&nbsp;MB. Your file is processed in memory and never stored.</p>
+
+              <div id="dropzone" class="dropzone" data-state="idle">
+                <input id="resume-input" name="resume" type="file" class="visually-hidden-input" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" aria-label="Resume file">
+                <div class="dropzone-idle" id="dropzone-idle" role="button" tabindex="0" aria-label="Browse files to choose a resume">
+                  <span class="dropzone-icon"><svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg></span>
+                  <p class="dropzone-title">Drag &amp; drop your resume here <span>or browse files</span></p>
+                  <p class="dropzone-hint">Accepted formats: .pdf, .docx</p>
+                </div>
+                <div class="dropzone-file" id="file-card" hidden>
+                  <svg class="icon file-icon" aria-hidden="true"><use href="#i-file"/></svg>
+                  <div class="file-meta">
+                    <strong id="file-name" title=""></strong>
+                    <span id="file-size"></span>
+                  </div>
+                  <span class="file-ready" id="file-ready" hidden><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Ready for analysis</span>
+                  <button id="file-remove" class="btn btn-ghost btn-sm" type="button" aria-label="Remove selected file">
+                    <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+                  </button>
+                </div>
+              </div>
+              <p class="field-error" id="file-error" role="alert" hidden></p>
+
+              <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg> Choose your target</h2>
+              <div class="segmented" role="radiogroup" aria-label="Target input type">
+                <label><input type="radio" name="target_mode" value="role" checked><span>Job role</span></label>
+                <label><input type="radio" name="target_mode" value="custom"><span>Job description</span></label>
+              </div>
+
+              <div id="role-control" class="target-control">
+                <label class="input-label" for="job-role">Target role</label>
+                <select id="job-role" name="job_role"><option value="">Loading roles…</option></select>
+              </div>
+              <div id="custom-control" class="target-control" hidden>
+                <label class="input-label" for="job-description">Job description</label>
+                <textarea id="job-description" name="job_description" rows="6" placeholder="Paste responsibilities, requirements, and preferred qualifications (at least 40 characters)."></textarea>
+              </div>
+
+              <button id="analyze-button" class="btn btn-primary btn-lg btn-block" type="submit">
+                <span class="btn-label"><span class="spinner spinner-inline" hidden></span><span id="analyze-button-text">Analyze Resume</span></span>
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+
+              <div id="upload-progress" class="progress-track" role="progressbar" aria-label="Upload progress" aria-valuemin="0" aria-valuemax="100" hidden>
+                <div class="progress-fill" id="upload-bar"></div>
+              </div>
+              <p class="status-line" id="analyze-status" role="status" aria-live="polite" hidden></p>
+            </form>
+
+            <aside class="card info-card" aria-label="What happens next">
+              <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg> What happens next?</h2>
+              <ol class="mini-steps" id="analysis-steps">
+                <li data-step="upload" class="active">Uploading resume</li>
+                <li data-step="parse">Extracting skills &amp; experience</li>
+                <li data-step="match">Matching against the target</li>
+                <li data-step="insight">Preparing recommendations</li>
+              </ol>
+              <div class="divider"></div>
+              <p class="muted">The analysis runs five transparent components — skills, semantic similarity, experience, education, and keywords — and shows exactly how the score was composed.</p>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ RESUME ANALYSIS ============ -->
+      <section class="view" id="view-resume" data-route="resume" aria-labelledby="resume-title">
+        <div class="container" id="resume-container">
+          <header class="page-head">
+            <div><p class="eyebrow">Resume analysis</p><h1 id="resume-title">Your resume, decoded</h1></div>
+            <button class="btn btn-outline js-report" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg> Download report</button>
+          </header>
+          <div id="resume-content"></div>
+        </div>
+      </section>
+
+      <!-- ============ JOB MATCH ============ -->
+      <section class="view" id="view-match" data-route="match" aria-labelledby="match-title">
+        <div class="container">
+          <header class="page-head">
+            <div><p class="eyebrow">Job match</p><h1 id="match-title">Match with a job</h1></div>
+          </header>
+
+          <form id="match-form" class="card match-input-card" novalidate>
+            <label class="input-label" for="match-jd">Paste job description</label>
+            <textarea id="match-jd" rows="7" placeholder="Paste responsibilities, requirements, and preferred qualifications (at least 40 characters)."></textarea>
+            <div class="match-input-row">
+              <p class="muted" id="match-file-note">Uses the resume from your latest analysis.</p>
+              <button id="match-button" class="btn btn-primary" type="submit">
+                <span class="spinner spinner-inline" hidden></span><span id="match-button-text">Analyze Job</span>
+              </button>
+            </div>
+            <p class="field-error" id="match-error" role="alert" hidden></p>
+            <p class="status-line" id="match-status" role="status" aria-live="polite" hidden></p>
+          </form>
+
+          <div id="match-results"></div>
+        </div>
+      </section>
+
+      <!-- ============ DASHBOARD ============ -->
+      <section class="view" id="view-dashboard" data-route="dashboard" aria-labelledby="dashboard-title">
+        <div class="container" id="dashboard-container">
+          <header class="page-head">
+            <div><p class="eyebrow">Dashboard</p><h1 id="dashboard-title">Analysis overview</h1></div>
+            <button class="btn btn-primary js-report" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg> <span class="js-report-label">Download Analysis Report</span></button>
+          </header>
+          <div id="dashboard-content"></div>
+        </div>
+      </section>
+
+      <!-- ============ ABOUT ============ -->
+      <section class="view" id="view-about" data-route="about" aria-labelledby="about-title">
+        <div class="container">
+          <header class="page-head"><div><p class="eyebrow">About</p><h1 id="about-title">Private, explainable career support</h1></div></header>
+          <div class="about-grid">
+            <article class="card"><h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg> Private by design</h2><p>Resumes are processed in memory and never written to disk. Nothing is stored, logged, or shared. Close the tab and the analysis is gone.</p></article>
+            <article class="card"><h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg> Transparent scoring</h2><p>Scores combine Skills (40%), Semantic similarity (25%), Experience (15%), Education (10%), and Keywords (10%). Every result shows the breakdown.</p></article>
+            <article class="card"><h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-bulb"/></svg> Honest guidance</h2><p>Recommendations are grounded in evidence found in your resume. The tool never suggests adding skills you cannot back up in an interview.</p></article>
+            <article class="card"><h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg> Works offline</h2><p>Matching, ATS analysis, and interview questions need no API keys. AI-written advice is an optional enhancement.</p></article>
+          </div>
+          <div class="card">
+            <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg> Good to know</h2>
+            <ul class="tick-list">
+              <li>Scanned or image-only PDFs are not supported yet (no OCR).</li>
+              <li>Unusual layouts may reduce parsing accuracy — conventional section headings work best.</li>
+              <li>The skill catalog and role list are plain JSON files, easy to extend.</li>
+              <li>Results are advisory; always review before acting on them.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <span class="brand-mark" aria-hidden="true"><svg class="icon"><use href="#i-logo"/></svg></span>
+          <span>AI Resume &amp; Job Matcher</span>
+        </div>
+        <nav aria-label="Footer">
+          <a href="#/home">Home</a>
+          <a href="#/analyze">Analyze</a>
+          <a href="#/match">Job Match</a>
+          <a href="#/about">About</a>
+        </nav>
+        <p class="footer-note">Resumes are processed in memory only — nothing is stored.</p>
+      </div>
+    </footer>
+
+    <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+
+    <script src="/static/js/ui.js" defer></script>
+    <script src="/static/js/api.js" defer></script>
+    <script src="/static/js/views.js" defer></script>
     <script src="/static/js/app.js" defer></script>
   </body>
 </html>

@@ -22,6 +22,9 @@ build/
 .coverage
 htmlcov/
 
+# Frontend DOM-test dependencies (optional, installed locally)
+node_modules/
+
 # NLP / ML caches (local)
 .cache/
 nltk_data/

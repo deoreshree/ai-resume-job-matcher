@@ -39,11 +39,16 @@ Candidates often have difficulty understanding how their documented experience r
 - HTML report generation and download
 
 ✅ **Modern Frontend**
-- Responsive HTML/CSS/JavaScript
-- Dashboard with score breakdown
-- Multiple analysis views
-- Real-time form validation
-- Progress indicators
+- Landing page (hero, features, how-it-works, CTA)
+- Responsive navbar with mobile hamburger menu
+- Drag & drop resume upload with progress and status states
+- Multi-page SPA: Resume Analysis, Job Match, Dashboard, About
+- ATS and match score rings, progress bars, skill-gap visualization
+- Resume-vs-job comparison table, keyword and gap tabs
+- Interview prep tabs with expandable cards and difficulty badges
+- Toast notifications, skeleton/step loading states, empty states
+- Accessible: keyboard navigation, ARIA roles, focus states, reduced-motion support
+- Robust API layer (never crashes on HTML/network/5xx errors)
 
 ✅ **Production Ready**
 - Docker containerization (multi-stage, non-root user, healthcheck)
@@ -308,6 +313,13 @@ pytest tests/test_parser.py -v
 pytest --cov=modules --cov=genai --cov=utils tests/
 ```
 
+**Optional browser-simulation tests** (frontend journey in jsdom):
+
+```bash
+cd tests/frontend && npm install jsdom && cd ../..
+pytest tests/test_frontend_dom.py -v
+```
+
 **Test Coverage:**
 - Resume parsing (PDF/DOCX extraction, section detection)
 - Skill extraction and catalog matching
@@ -316,6 +328,9 @@ pytest --cov=modules --cov=genai --cov=utils tests/
 - ATS analysis
 - GenAI fallback behavior
 - Report generation
+- API routes (happy paths + error paths)
+- Frontend integrity (IDs, assets, CSP compliance, API URLs, icons)
+- Frontend DOM integration (upload → analyze → dashboard → match → report → error handling)
 
 ---
 
@@ -455,12 +470,15 @@ ai-resume-job-matcher/
 │   ├── helpers.py           # Helper functions
 │   └── report_builder.py    # HTML report generation
 │
-├── static/                  # Frontend assets
-│   ├── index.html           # Main HTML file
+├── static/                  # Frontend assets (framework-free SPA)
+│   ├── index.html           # Landing + app views, SVG icon sprite
 │   ├── css/
-│   │   └── style.css        # Styling
+│   │   └── style.css        # Design system (tokens, components, responsive)
 │   └── js/
-│       └── app.js           # JavaScript logic
+│       ├── ui.js            # Reusable components: toasts, rings, bars, chips, tabs
+│       ├── api.js           # API layer with robust error handling
+│       ├── views.js         # View renderers (resume, match, dashboard)
+│       └── app.js           # Router, state, upload flow, report download
 │
 └── tests/                   # Test suite
     ├── test_parser.py       # Parser tests
@@ -469,7 +487,11 @@ ai-resume-job-matcher/
     ├── test_scoring.py
     ├── test_job_and_ats.py
     ├── test_genai_and_report.py
+    ├── test_api.py          # Flask route tests
+    ├── test_frontend.py     # Static frontend integrity tests
+    ├── test_frontend_dom.py # Optional jsdom browser-simulation tests
     ├── conftest.py          # pytest configuration
+    ├── frontend/            # jsdom harness (npm install jsdom to enable)
     └── fixtures/
         └── sample_resume.txt  # Test data
 ```
