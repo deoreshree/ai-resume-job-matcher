@@ -86,7 +86,10 @@ function renderResume(data) {
 function renderMatch(data) {
   const { job_profile: profile, match } = data;
   const formula = Object.entries({ skills: "Skills match", semantic: "Semantic relevance", experience: "Experience fit", education: "Education", keywords: "Keyword coverage" }).map(([key, label]) => `<div><span>${label}: ${Number(match.components[key] || 0).toFixed(1)}%</span><strong>× ${Math.round(Number(match.weights[key] || 0) * 100)}%</strong></div>`).join("");
-  byId("match-content").innerHTML = `<div class="role-summary"><article class="panel"><div class="score-hero"><div class="score-number">${Math.round(match.overall_score)}%</div><p><strong>${escapeHtml(profile.title)}</strong><br>Semantic comparison: ${escapeHtml(match.semantic_method)}</p></div><p class="eyebrow">TRANSPARENT FORMULA</p><div class="formula">${formula}</div></article><article class="panel"><p class="eyebrow">ROLE REQUIREMENTS</p><h2>Skills requested</h2><div class="item-row"><h4>Required</h4><div class="chips">${chips(profile.required_skills)}</div></div><div class="item-row"><h4>Preferred</h4><div class="chips">${chips(profile.preferred_skills)}</div></div></article></div><div class="two-column"><article class="panel"><p class="eyebrow">EVIDENCE FOUND</p><h2>Matching skills and keywords</h2><div class="item-row"><h4>Skills</h4><div class="chips">${chips(match.skill_match.matching_skills)}</div></div><div class="item-row"><h4>Keywords</h4><div class="chips">${chips(match.keyword_match.matched_keywords)}</div></div></article><article class="panel"><p class="eyebrow">EVIDENCE TO BUILD</p><h2>Missing skills and keywords</h2><div class="item-row"><h4>Skills</h4><div class="chips">${chips(match.skill_match.missing_skills, "gap")}</div></div><div class="item-row"><h4>Keywords</h4><div class="chips">${chips(match.keyword_match.missing_keywords, "gap")}</div></div></article></div>`;
+  const warnings = profile.warnings?.length
+    ? `<div class="source-note"><strong>Analysis note:</strong> ${escapeHtml(profile.warnings.join(" "))}</div>`
+    : "";
+  byId("match-content").innerHTML = `${warnings}<div class="role-summary"><article class="panel"><div class="score-hero"><div class="score-number">${Math.round(match.overall_score)}%</div><p><strong>${escapeHtml(profile.title)}</strong><br>Semantic comparison: ${escapeHtml(match.semantic_method)}</p></div><p class="eyebrow">TRANSPARENT FORMULA</p><div class="formula">${formula}</div></article><article class="panel"><p class="eyebrow">ROLE REQUIREMENTS</p><h2>Skills requested</h2><div class="item-row"><h4>Required</h4><div class="chips">${chips(profile.required_skills)}</div></div><div class="item-row"><h4>Preferred</h4><div class="chips">${chips(profile.preferred_skills)}</div></div></article></div><div class="two-column"><article class="panel"><p class="eyebrow">EVIDENCE FOUND</p><h2>Matching skills and keywords</h2><div class="item-row"><h4>Skills</h4><div class="chips">${chips(match.skill_match.matching_skills)}</div></div><div class="item-row"><h4>Keywords</h4><div class="chips">${chips(match.keyword_match.matched_keywords)}</div></div></article><article class="panel"><p class="eyebrow">EVIDENCE TO BUILD</p><h2>Missing skills and keywords</h2><div class="item-row"><h4>Skills</h4><div class="chips">${chips(match.skill_match.missing_skills, "gap")}</div></div><div class="item-row"><h4>Keywords</h4><div class="chips">${chips(match.keyword_match.missing_keywords, "gap")}</div></div></article></div>`;
 }
 
 function renderGap(data) {
@@ -188,10 +191,12 @@ async function downloadReport() {
       throw new Error(payload.error || "The report could not be generated.");
     }
     const blob = await response.blob();
+    const disposition = response.headers.get("Content-Disposition") || "";
+    const matchName = disposition.match(/filename\*?=(?:UTF-8'')?"?([^";]+)/i);
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "resume-match-report.html";
+    link.download = matchName ? decodeURIComponent(matchName[1]) : "resume-match-report.html";
     document.body.append(link);
     link.click();
     link.remove();
@@ -214,6 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }));
   byId("analysis-form").addEventListener("submit", submitAnalysis);
   byId("report-button").addEventListener("click", downloadReport);
+  byId("brand-link").addEventListener("click", (event) => { event.preventDefault(); setView("dashboard"); });
   document.querySelectorAll(".nav-link").forEach((link) => link.addEventListener("click", (event) => { event.preventDefault(); setView(link.dataset.view); }));
   setView("dashboard");
 });

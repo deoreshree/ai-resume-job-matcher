@@ -41,9 +41,15 @@ def match_skills(
 
     required_coverage = _coverage(required_matches, required)
     preferred_coverage = _coverage(preferred_matches, preferred)
-    # Core requirements dominate, while preferred experience rewards candidates without
-    # making a role with no preferred items score lower.
-    score = required_coverage if not preferred else (0.8 * required_coverage + 0.2 * preferred_coverage)
+    if not required and not preferred:
+        # No detectable skill requirements (e.g. a custom JD outside the catalog):
+        # evidence is unknown, so the skills component stays neutral instead of
+        # granting a free 100% that would inflate the overall match.
+        score = 0.5
+    else:
+        # Core requirements dominate, while preferred experience rewards candidates without
+        # making a role with no preferred items score lower.
+        score = required_coverage if not preferred else (0.8 * required_coverage + 0.2 * preferred_coverage)
     gaps = [
         {"skill": skill, "importance": "High", "reason": "Listed as a required skill for this target role."}
         for skill in missing_required
@@ -85,6 +91,21 @@ def match_keywords(resume_text: str, job_keywords: list[str]) -> dict[str, Any]:
     }
 
 
+def _resume_digest(parsed_resume: dict[str, Any]) -> str:
+    """Structured summary of a resume: skills, degrees, titles, project titles, keywords.
+
+    Compared alongside the full text, this gives TF-IDF a like-for-like document against
+    the short keyword-dense profile text of predefined roles.
+    """
+    parts: list[str] = []
+    parts += [str(skill) for skill in parsed_resume.get("skills", []) or []]
+    parts += [str(entry.get("degree") or "") for entry in parsed_resume.get("education", []) or [] if isinstance(entry, dict)]
+    parts += [str(entry.get("title") or "") for entry in parsed_resume.get("experience", []) or [] if isinstance(entry, dict)]
+    parts += [str(project.get("title") or "") for project in parsed_resume.get("projects", []) or [] if isinstance(project, dict)]
+    parts += [str(keyword) for keyword in (parsed_resume.get("keywords") or [])[:25]]
+    return " ".join(part for part in parts if part and part != "None")
+
+
 def match_resume_to_job(parsed_resume: dict[str, Any], job_profile: dict[str, Any]) -> dict[str, Any]:
     """Run all score components and return an auditable match result."""
     skills = match_skills(
@@ -102,7 +123,13 @@ def match_resume_to_job(parsed_resume: dict[str, Any], job_profile: dict[str, An
             *job_profile.get("technologies", []),
         ]
     )
-    semantic = semantic_similarity(parsed_resume.get("raw_text", ""), profile_text)
+    # Compare both the full resume text and a structured digest; predefined role profiles
+    # are short keyword documents, so raw-text cosine is systematically low. Taking the
+    # better of the two keeps unrelated roles near zero while fairly lifting true matches.
+    semantic = max(
+        semantic_similarity(parsed_resume.get("raw_text", ""), profile_text),
+        semantic_similarity(_resume_digest(parsed_resume), profile_text),
+    )
     experience = experience_match_score(
         float(parsed_resume.get("years_experience") or 0), float(job_profile.get("minimum_experience") or 0)
     )

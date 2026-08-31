@@ -72,8 +72,22 @@ def _extract_education(text: str) -> list[str]:
 
 def _candidate_keywords(text: str, skills: list[str]) -> list[str]:
     phrases = re.findall(r"\b[a-zA-Z][a-zA-Z-]*(?:\s+[a-zA-Z][a-zA-Z-]*){1,2}\b", text)
-    blocked = {"the role", "you will", "we are", "this role", "our team", "to the", "and the", "with the"}
-    valuable = [phrase for phrase in phrases if phrase.casefold() not in blocked and len(phrase) > 6]
+    blocked = {
+        "the role", "you will", "we are", "this role", "our team", "to the", "and the", "with the",
+        "we offer", "apply now", "job description", "years of", "year of", "degree in", "or related",
+        "equal opportunity", "opportunity employer", "the candidate", "ideal candidate", "work environment",
+        "benefits and", "such as", "ability to", "experience in", "experience with", "experience building",
+        "looking for", "seeking a", "join our", "part of", "well as", "in order", "across the",
+    }
+    blocked_words = {"the", "a", "an", "and", "or", "of", "in", "to", "for", "with", "our", "we", "you", "your", "is", "are", "will", "be"}
+    valuable = []
+    for phrase in phrases:
+        words = phrase.split()
+        if phrase.casefold() in blocked or len(phrase) <= 6:
+            continue
+        if words[0].casefold() in blocked_words or words[-1].casefold() in blocked_words:
+            continue
+        valuable.append(phrase)
     return _unique([*skills, *valuable])[:25]
 
 
@@ -94,6 +108,12 @@ def analyze_job_description(text: str) -> dict[str, Any]:
     if not title or len(title) > 70:
         title = "Custom Job Description"
     technologies = _unique([*required, *preferred])
+    warnings: list[str] = []
+    if not technologies:
+        warnings.append(
+            "No skills from the application's skill catalog were recognised in this job description, "
+            "so the skills component is neutral and matching relies on keyword and semantic similarity only."
+        )
     return {
         "title": title,
         "required_skills": _unique(required),
@@ -103,6 +123,7 @@ def analyze_job_description(text: str) -> dict[str, Any]:
         "minimum_experience": _extract_experience(raw),
         "tools": technologies,
         "technologies": technologies,
+        "warnings": warnings,
         "source": "custom",
         "raw_text": raw,
     }
