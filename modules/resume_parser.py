@@ -5,12 +5,13 @@ from __future__ import annotations
 import io
 import logging
 import re
+from functools import lru_cache
 from typing import Any, Optional
 
 from pypdf import PdfReader
 from pypdf.errors import PdfReadError
 
-from config import SPACY_MODEL
+from config import MAX_RESUME_TEXT_CHARS, SPACY_MODEL
 from modules.skill_extractor import extract_skills
 from utils.helpers import estimate_years_of_experience, find_degree
 from utils.text_cleaner import clean_text
@@ -33,8 +34,12 @@ _HEADING_ALIASES: dict[str, tuple[str, ...]] = {
         "experience",
         "work experience",
         "employment",
+        "employment history",
         "professional experience",
+        "professional background",
         "work history",
+        "relevant experience",
+        "career history",
         "internship",
         "internships",
     ),
@@ -46,8 +51,9 @@ _HEADING_ALIASES: dict[str, tuple[str, ...]] = {
         "technologies",
         "tech stack",
         "key skills",
+        "skill set",
     ),
-    "projects": ("projects", "personal projects", "academic projects", "key projects"),
+    "projects": ("projects", "personal projects", "academic projects", "key projects", "selected projects"),
     "certifications": ("certifications", "certificates", "licenses"),
     "achievements": ("achievements", "awards", "honors", "accomplishments"),
     "contact": ("contact", "contact information", "personal information"),
@@ -138,7 +144,8 @@ def extract_text(file_bytes: bytes, filename: str) -> str:
         raise ResumeValidationError(
             "No extractable text was found. Scanned or image-only resumes are not supported yet."
         )
-    return cleaned
+    # Cap extracted size so a crafted archive cannot amplify into an unbounded string.
+    return cleaned[:MAX_RESUME_TEXT_CHARS]
 
 
 def parse_resume(file_bytes: bytes, filename: str) -> dict[str, Any]:
@@ -169,7 +176,7 @@ def parse_resume_text(text: str) -> dict[str, Any]:
     skills = skill_details["skills"] or section_skills
     keywords = extract_keywords(cleaned, skills)
 
-    years = estimate_years_of_experience(sections.get("experience", "") or cleaned)
+    years = estimate_years_of_experience(_experience_source(sections, cleaned))
 
     linkedin = next((url for url in urls if "linkedin.com" in url.casefold()), None)
     github = next((url for url in urls if "github.com" in url.casefold()), None)
@@ -204,6 +211,24 @@ def parse_resume_text(text: str) -> dict[str, Any]:
     }
 
 
+def _experience_source(sections: dict[str, str], cleaned: str) -> str:
+    """Choose the text used to estimate years of experience.
+
+    Date ranges are only trusted from experience-like sections. When no experience
+    section was detected, education/projects/certifications/achievements sections are
+    excluded from the fallback so that degree dates ("2018 - 2022") are never counted
+    as work history.
+    """
+    experience_text = " ".join(
+        sections.get(key, "") for key in ("experience", "internships") if key in sections
+    )
+    if experience_text.strip():
+        return experience_text
+    excluded = {"education", "projects", "certifications", "achievements", "skills"}
+    fallback = "\n".join(text for key, text in sections.items() if key not in excluded)
+    return fallback or cleaned
+
+
 def split_sections(text: str) -> dict[str, str]:
     """Split resume text into known sections using heading detection."""
     lines = text.split("\n")
@@ -234,9 +259,42 @@ def extract_name(text: str, sections: Optional[dict[str, str]] = None) -> Option
 
     for line in header.split("\n"):
         candidate = line.strip(" |-")
-        if _looks_like_name(candidate):
+        if _looks_like_name(candidate) and not _looks_like_job_title(candidate):
             return candidate
     return None
+
+
+_JOB_TITLE_WORD_RE = re.compile(
+    r"engineer|developer|scientist|analyst|manager|designer|consultant|architect|"
+    r"intern|specialist|administrator|technician|programmer|associate|strategist|"
+    r"researcher|nurse|accountant",
+    re.IGNORECASE,
+)
+
+
+@lru_cache(maxsize=1)
+def _known_role_titles() -> frozenset[str]:
+    """Role titles from the catalog, normalised, so header titles are never read as names."""
+    try:
+        from modules.job_analyzer import load_job_roles
+
+        return frozenset(
+            re.sub(r"[^a-z0-9 ]", "", str(role.get("title", ""))).strip() for role in load_job_roles()
+        )
+    except Exception:
+        return frozenset()
+
+
+def _looks_like_job_title(line: str) -> bool:
+    """Heuristic: does this header line look like a job title rather than a person?"""
+    cleaned = re.sub(r"[^a-zA-Z0-9 ]", "", line or "").strip().lower()
+    if not cleaned:
+        return False
+    if cleaned in _known_role_titles():
+        return True
+    if _JOB_TITLE_WORD_RE.search(cleaned):
+        return True
+    return bool(re.fullmatch(r"(?:senior|junior|lead|principal|staff|chief)?\s?(?:data|software|ml|ai|web|cloud|devops|security|product|business|systems?|full[- ]stack)\s+\w+", cleaned))
 
 
 def extract_skill_phrases(skills_section: str, full_text: str) -> list[str]:

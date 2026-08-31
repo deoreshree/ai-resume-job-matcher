@@ -1,0 +1,31 @@
+# Never ship these into the Docker build context / image.
+.git
+.gitignore
+.venv
+venv
+env
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.cache/
+nltk_data/
+
+# Secrets must never enter an image.
+.env
+.env.local
+*.pem
+
+# Local artifacts and documentation-only files.
+Dockerfile
+.dockerignore
+.github/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+uploads/
+tmp/

@@ -2,7 +2,7 @@
 
 An **offline-first Flask REST API** that reads a candidate's PDF or DOCX resume, compares evidence from it with a job role or job description, and produces transparent career guidance. It is designed to be privacy-first, explainable, and production-ready.
 
-**Status**: ✅ **100% DEVELOPED & PRODUCTION-READY**
+**Status**: ✅ **Feature-complete and deployable.** Core analysis, matching, ATS, guidance, interview prep, reports, and deployment all work. See `AUDIT.md` for a full technical audit (including known limitations) and `IMPLEMENTATION_PLAN.md` for the prioritized roadmap that was executed. Optional enhancements (OCR, PDF export, multilingual parsing) remain future work.
 
 ---
 
@@ -46,18 +46,20 @@ Candidates often have difficulty understanding how their documented experience r
 - Progress indicators
 
 ✅ **Production Ready**
-- Docker containerization
+- Docker containerization (multi-stage, non-root user, healthcheck)
 - Cloud deployment (Render, Heroku)
 - Gunicorn WSGI server
 - Environment variable configuration
 - In-memory processing (no disk storage)
-- Comprehensive test suite
+- Security headers (CSP, nosniff, frame denial)
+- Best-effort rate limiting on the analysis endpoint
+- Comprehensive test suite (71+ tests) with CI
 
 ---
 
 ## Technology Stack
 
-**Backend**: Flask 3.1+, Python 3.10+
+**Backend**: Flask 3.1+, Python 3.11+
 **ML/NLP**: scikit-learn, spaCy, sentence-transformers (optional), nltk
 **Resume Parsing**: pypdf, python-docx
 **Optional AI**: OpenAI SDK
@@ -77,6 +79,7 @@ Candidates often have difficulty understanding how their documented experience r
 │  Endpoints:                                                 │
 │  • GET  /             → Serve index.html                   │
 │  • GET  /api/roles    → List predefined job roles          │
+│  • GET  /api/health   → JSON liveness check                │
 │  • POST /api/analyze  → Parse resume & calculate match     │
 │  • POST /api/report   → Generate downloadable report       │
 └─────────────────────────────────────────────────────────────┘
@@ -101,7 +104,7 @@ Candidates often have difficulty understanding how their documented experience r
 ## Installation & Setup
 
 ### Prerequisites
-- Python 3.10 or higher
+- Python 3.11 or higher (the version the Docker image uses; 3.12 also works)
 - pip (Python package manager)
 
 ### Local Development
@@ -325,7 +328,9 @@ pytest --cov=modules --cov=genai --cov=utils tests/
 - `LLM_API_KEY` - Alternative LLM API key
 - `OPENAI_MODEL` - Model selection (default: gpt-4o-mini)
 - `OPENAI_BASE_URL` - API endpoint override
-- `ENABLE_EMBEDDINGS` - Enable sentence-transformers (default: false)
+- `ENABLE_EMBEDDINGS` - Enable sentence-transformers (default: false; first run `pip install -r requirements-embeddings.txt` and download the model — see `.env.example`)
+- `RATE_LIMIT_PER_MINUTE` - Best-effort per-IP analysis limit (default: 30, `0` disables)
+- `LLM_TIMEOUT_SECONDS` - Timeout for optional AI advice calls (default: 20)
 - `EMBEDDING_MODEL` - Model name (default: all-MiniLM-L6-v2)
 - `SPACY_MODEL` - spaCy model (default: en_core_web_sm)
 - `PORT` - Server port (default: 5000, set by deployment platform)
@@ -413,11 +418,16 @@ ai-resume-job-matcher/
 ├── app.py                    # Flask REST API entry point
 ├── config.py                 # Configuration and constants
 ├── requirements.txt          # Python dependencies
+├── requirements-embeddings.txt # Optional ML extras (ENABLE_EMBEDDINGS)
 ├── gunicorn.conf.py         # Production WSGI settings
 ├── Procfile                 # Cloud deployment config
 ├── Dockerfile               # Container configuration
+├── .dockerignore            # Keeps secrets/venv/git out of the image
 ├── .env.example             # Environment variable template
 ├── .gitignore               # Git ignore patterns
+├── AUDIT.md                 # Technical audit findings
+├── IMPLEMENTATION_PLAN.md   # Prioritized roadmap executed for this revision
+├── LICENSE                  # MIT license
 ├── README.md                # This file
 │
 ├── data/

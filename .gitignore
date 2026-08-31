@@ -34,9 +34,6 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Streamlit
-.streamlit/secrets.toml
-
 # Uploaded resumes (should never persist; extra safety)
 uploads/
 uploaded_resumes/

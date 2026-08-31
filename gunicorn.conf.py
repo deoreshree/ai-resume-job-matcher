@@ -7,8 +7,8 @@ import os
 bind = f"0.0.0.0:{os.getenv('PORT', 5000)}"
 backlog = 2048
 
-# Worker processes
-workers = max(2, multiprocessing.cpu_count())
+# Worker processes (capped: each worker loads scikit-learn/spaCy into memory)
+workers = min(4, max(2, multiprocessing.cpu_count()))
 worker_class = "gthread"
 threads = 2
 worker_connections = 1000

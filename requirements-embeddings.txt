@@ -1,0 +1,10 @@
+# Optional semantic-matching extras.
+#
+# Install ONLY if you plan to set ENABLE_EMBEDDINGS=true (see .env.example):
+#   pip install -r requirements-embeddings.txt
+#   python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
+#
+# These packages (torch + transformers) add ~2 GB. The application runs fully
+# without them and falls back to TF-IDF cosine similarity.
+sentence-transformers==6.0.1
+torch==2.5.1

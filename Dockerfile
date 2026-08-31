@@ -1,58 +1,49 @@
-# Multi-stage build for optimized container image
+# Multi-stage build for an optimized container image.
+# Python version must stay compatible with requirements.txt (3.11+).
 FROM python:3.11-slim AS builder
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1
 
 WORKDIR /build
 
-# Install build dependencies
+# Build dependencies for wheels that ship no binary for this platform.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements
+# Install Python dependencies into a dedicated virtualenv that is copied forward.
 COPY requirements.txt .
+RUN python -m venv /opt/venv \
+    && /opt/venv/bin/pip install --upgrade pip \
+    && /opt/venv/bin/pip install -r requirements.txt \
+    && /opt/venv/bin/python -m spacy download en_core_web_sm
 
-# Install Python dependencies to a local directory
-RUN pip install --user --no-cache-dir -r requirements.txt
-
-# Download spaCy model
-RUN python -m spacy download en_core_web_sm
-
-
-# Runtime stage
+# Runtime stage.
 FROM python:3.11-slim
 
-WORKDIR /app
-
-# Install runtime dependencies only
+# libgomp1 is required by scikit-learn; create an unprivileged user.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --uid 1000 appuser
 
-# Copy Python dependencies from builder
-COPY --from=builder /root/.local /root/.local
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /opt/venv /opt/venv
 
-# Copy application code
-COPY . .
+WORKDIR /app
+COPY --chown=appuser:appuser . .
 
-# Set environment variables
-ENV PATH=/root/.local/bin:$PATH \
+ENV PATH=/opt/venv/bin:$PATH \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PORT=5000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:5000/', timeout=5)" || exit 1
+USER appuser
+EXPOSE 5000
 
-# Run the application with Gunicorn
-CMD ["gunicorn", \
-     "--bind", "0.0.0.0:5000", \
-     "--workers", "2", \
-     "--threads", "2", \
-     "--worker-class", "gthread", \
-     "--worker-tmp-dir", "/dev/shm", \
-     "--timeout", "30", \
-     "--access-logfile", "-", \
-     "--error-logfile", "-", \
-     "app:app"]
+# Liveness check against the JSON health endpoint.
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+    CMD python -c "import os, requests; requests.get('http://localhost:%s/api/health' % os.environ.get('PORT', '5000'), timeout=5)" || exit 1
+
+# gunicorn.conf.py honours $PORT and caps worker count.
+CMD ["gunicorn", "-c", "gunicorn.conf.py", "app:app"]

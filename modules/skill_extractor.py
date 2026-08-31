@@ -61,8 +61,11 @@ def _contains_term(text: str, term: str) -> bool:
     term = term.strip()
     if not term:
         return False
-    if term == " c ":
-        return bool(re.search(r"(?<![A-Za-z0-9+#])c(?![A-Za-z0-9+#])", text, re.IGNORECASE))
+    if len(term) <= 2:
+        # Very short aliases (C, R, Go) must also never border a hyphen or ampersand,
+        # so phrases like "R&D" or "go-to-market" are not read as programming skills.
+        pattern = r"(?<![A-Za-z0-9+#&-])" + re.escape(term) + r"(?![A-Za-z0-9+#&-])"
+        return bool(re.search(pattern, text, re.IGNORECASE))
     pattern = r"(?<![A-Za-z0-9+#])" + re.escape(term) + r"(?![A-Za-z0-9+#])"
     return bool(re.search(pattern, text, re.IGNORECASE))
 
