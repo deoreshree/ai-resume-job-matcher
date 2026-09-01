@@ -1,0 +1,173 @@
+{
+  "version": 1,
+  "companies": [
+    {
+      "name": "Microsoft",
+      "industry": "Enterprise Software & Cloud Platforms",
+      "tier": "Tier-1 Tech",
+      "description": "Global leader in cloud computing (Azure), enterprise productivity, AI platforms, developer tooling, and operating systems.",
+      "roles": ["Software Engineer", "AI/ML Engineer", "Data Scientist", "Cloud Engineer", "DevOps Engineer"],
+      "required_skills": ["Python", "C#", "Java", "SQL", "Git", "REST APIs"],
+      "preferred_skills": ["Azure", "Docker", "Kubernetes", "Machine Learning", "Scikit-learn", "CI/CD", "FastAPI"],
+      "keywords": ["enterprise platforms", "cloud scalability", "distributed systems", "unit testing", "code review", "debugging"],
+      "culture_traits": ["Growth mindset", "Customer empathy", "Continuous learning", "Inclusive collaboration"],
+      "interview_focus": ["Data Structures & Algorithms", "System Architecture & Scale", "Behavioral & Growth Mindset", "Code Quality & Testing"]
+    },
+    {
+      "name": "Google",
+      "industry": "Search, Cloud, AI & Distributed Systems",
+      "tier": "Tier-1 Tech",
+      "description": "Pioneering technological leader in distributed systems, search, advertising, Android, Google Cloud, and AI research.",
+      "roles": ["Software Engineer", "Machine Learning Engineer", "AI/ML Engineer", "Data Scientist", "Backend Developer"],
+      "required_skills": ["Python", "Java", "C++", "SQL", "Git", "Problem Solving"],
+      "preferred_skills": ["TensorFlow", "PyTorch", "GCP", "Kubernetes", "Docker", "Linux", "MLOps"],
+      "keywords": ["distributed computing", "machine learning", "algorithms", "scalability", "production pipelines", "experimentation"],
+      "culture_traits": ["Googlyness & leadership", "Intellectual curiosity", "Algorithmic thinking", "High-scale engineering"],
+      "interview_focus": ["Advanced Problem Solving & DSA", "System Design at Scale", "Machine Learning Foundations", "Googlyness & Collaboration"]
+    },
+    {
+      "name": "Amazon",
+      "industry": "E-Commerce, Cloud (AWS) & Logistics AI",
+      "tier": "Tier-1 Tech",
+      "description": "Global powerhouse in cloud infrastructure (AWS), e-commerce logistics, recommendation engines, and high-throughput systems.",
+      "roles": ["Software Engineer", "Backend Developer", "DevOps Engineer", "Cloud Engineer", "Data Analyst"],
+      "required_skills": ["Java", "Python", "SQL", "Git", "REST APIs", "Problem Solving"],
+      "preferred_skills": ["AWS", "Docker", "Kubernetes", "Linux", "CI/CD", "PostgreSQL", "Terraform"],
+      "keywords": ["distributed services", "high availability", "microservices", "operational excellence", "customer obsession", "automation"],
+      "culture_traits": ["Customer Obsession", "Ownership", "Bias for Action", "Deliver Results"],
+      "interview_focus": ["Amazon Leadership Principles (LP)", "Object-Oriented Design & Microservices", "Data Structures & Algorithms", "AWS Cloud Concepts"]
+    },
+    {
+      "name": "Meta",
+      "industry": "Social Platforms, AI Research & Metaverse",
+      "tier": "Tier-1 Tech",
+      "description": "Creator of social technologies, PyTorch, React, open-source AI models (Llama), and massive-scale graph databases.",
+      "roles": ["Full Stack Developer", "Frontend Developer", "Machine Learning Engineer", "Software Engineer", "Data Scientist"],
+      "required_skills": ["Python", "JavaScript", "React", "SQL", "Git", "REST APIs"],
+      "preferred_skills": ["PyTorch", "TypeScript", "Node.js", "Docker", "Machine Learning", "FastAPI"],
+      "keywords": ["user interfaces", "responsive design", "model training", "high-throughput APIs", "rapid experimentation", "open source"],
+      "culture_traits": ["Move Fast", "Be Bold", "Focus on Impact", "Build Awesome Things"],
+      "interview_focus": ["Frontend Architecture & React", "Machine Learning & PyTorch", "Coding Speed & Practical DSA", "Behavioral & Team Impact"]
+    },
+    {
+      "name": "Apple",
+      "industry": "Consumer Hardware, OS, Privacy & Edge AI",
+      "tier": "Tier-1 Tech",
+      "description": "Premier hardware and software ecosystem emphasizing user experience, privacy, embedded systems, and on-device machine learning.",
+      "roles": ["Software Engineer", "Machine Learning Engineer", "Backend Developer", "DevOps Engineer"],
+      "required_skills": ["Python", "C++", "Java", "Git", "Problem Solving"],
+      "preferred_skills": ["Linux", "Machine Learning", "PyTorch", "Docker", "REST APIs", "CI/CD"],
+      "keywords": ["user privacy", "embedded performance", "software quality", "device integration", "algorithms", "low latency"],
+      "culture_traits": ["Attention to detail", "Confidentiality & privacy", "User experience obsession", "Craftsmanship"],
+      "interview_focus": ["Low-Level & High-Level System Architecture", "Data Structures & Algorithms", "Privacy & Security Best Practices", "Cross-Functional Collaboration"]
+    },
+    {
+      "name": "TCS (Tata Consultancy Services)",
+      "industry": "Global IT Consulting & Digital Transformation",
+      "tier": "Enterprise Consulting",
+      "description": "One of the world's largest IT services organizations delivering enterprise digital solutions, cloud migration, and analytics.",
+      "roles": ["Software Engineer", "Java Developer", "Python Developer", "Data Analyst", "Database Administrator"],
+      "required_skills": ["Java", "Python", "SQL", "Git", "HTML", "CSS", "Communication"],
+      "preferred_skills": ["REST APIs", "Spring", "AWS", "MySQL", "PostgreSQL", "Excel", "Agile"],
+      "keywords": ["enterprise migration", "client delivery", "agile teams", "database management", "business requirements", "unit testing"],
+      "culture_traits": ["Professional integrity", "Client focus", "Team adaptability", "Process excellence"],
+      "interview_focus": ["Core Java / Python Fundamentals", "Database Design & SQL Queries", "Object-Oriented Programming (OOP)", "Aptitude & Communication Skills"]
+    },
+    {
+      "name": "Infosys",
+      "industry": "Enterprise Cloud, AI & Next-Gen Services",
+      "tier": "Enterprise Consulting",
+      "description": "Global leader in next-generation digital services, enterprise cloud ecosystems, automation, and full-stack software delivery.",
+      "roles": ["Full Stack Developer", "Software Engineer", "Data Analyst", "Python Developer", "Business Analyst"],
+      "required_skills": ["Python", "Java", "SQL", "Git", "JavaScript", "Communication"],
+      "preferred_skills": ["React", "Node.js", "Docker", "AWS", "Tableau", "Power BI", "Agile"],
+      "keywords": ["full stack development", "cloud automation", "client communication", "business metrics", "dashboards", "documentation"],
+      "culture_traits": ["Learnability", "Continuous upskilling", "Global collaboration", "Excellence in execution"],
+      "interview_focus": ["Full Stack & Web Technologies", "Data Analysis & SQL Manipulation", "Problem Solving & Logic", "Client Scenarios & Soft Skills"]
+    },
+    {
+      "name": "Stripe",
+      "industry": "Global Financial Infrastructure & Payments",
+      "tier": "FinTech Leader",
+      "description": "Economic infrastructure for the internet, known for world-class developer APIs, reliability, and automated payment pipelines.",
+      "roles": ["Backend Developer", "Software Engineer", "Full Stack Developer", "DevOps Engineer"],
+      "required_skills": ["Python", "Java", "REST APIs", "SQL", "Git", "Problem Solving"],
+      "preferred_skills": ["Docker", "Kubernetes", "PostgreSQL", "Redis", "CI/CD", "Linux", "FastAPI"],
+      "keywords": ["payment processing", "high reliability", "idempotency", "API design", "security", "automated testing"],
+      "culture_traits": ["Users first", "Rigorous engineering", "Macro-optimism", "Attention to detail"],
+      "interview_focus": ["Practical Coding & Debugging (Real IDE)", "API Design & Backward Compatibility", "System Reliability & Concurrency", "Architecture & Data Consistency"]
+    },
+    {
+      "name": "Spotify",
+      "industry": "Audio Streaming, Recommendation AI & Web",
+      "tier": "Product Tech",
+      "description": "World's leading audio streaming platform leveraging recommendation algorithms, microservices, and modern web architectures.",
+      "roles": ["Machine Learning Engineer", "Backend Developer", "Full Stack Developer", "Data Scientist", "Frontend Developer"],
+      "required_skills": ["Python", "Java", "JavaScript", "SQL", "Git", "REST APIs"],
+      "preferred_skills": ["React", "PyTorch", "Docker", "GCP", "Kubernetes", "Pandas", "Scikit-learn"],
+      "keywords": ["recommendation systems", "streaming architecture", "event-driven systems", "user experience", "experimentation", "microservices"],
+      "culture_traits": ["Autonomy & squads", "Experimentation culture", "Passionate about audio", "Collaborative spirit"],
+      "interview_focus": ["Machine Learning & Personalization", "Modern Web / Backend Microservices", "Distributed Data Processing", "Squad Collaboration & Culture Fit"]
+    },
+    {
+      "name": "Uber",
+      "industry": "Mobility Platforms, Real-Time Logistics & Marketplace AI",
+      "tier": "Product Tech",
+      "description": "Global mobility and delivery platform processing millions of real-time transactions, geospatial routing, and dynamic pricing.",
+      "roles": ["Backend Developer", "Software Engineer", "Machine Learning Engineer", "DevOps Engineer", "Data Scientist"],
+      "required_skills": ["Python", "Java", "SQL", "Git", "REST APIs", "Problem Solving"],
+      "preferred_skills": ["Docker", "Kubernetes", "Linux", "FastAPI", "PostgreSQL", "Redis", "AWS"],
+      "keywords": ["real-time processing", "geospatial analytics", "low latency", "microservices", "marketplace dynamics", "monitoring"],
+      "culture_traits": ["Customer focus", "End-to-end ownership", "Data-driven decisions", "Resilience"],
+      "interview_focus": ["Low-Latency Backend Architecture", "Concurrency & Distributed Caching", "Real-Time Problem Solving", "Algorithms & Dynamic Programming"]
+    },
+    {
+      "name": "Adobe",
+      "industry": "Creative Cloud, Document AI & Digital Experience",
+      "tier": "Product Tech",
+      "description": "Leader in digital media, Creative Cloud, document intelligence (Acrobat AI), and customer experience platforms.",
+      "roles": ["Full Stack Developer", "Frontend Developer", "AI/ML Engineer", "Software Engineer", "Data Scientist"],
+      "required_skills": ["JavaScript", "Python", "HTML", "CSS", "Git", "REST APIs"],
+      "preferred_skills": ["React", "TypeScript", "Docker", "Machine Learning", "Node.js", "AWS", "PyTorch"],
+      "keywords": ["digital media", "user experience", "document AI", "cloud services", "component design", "web applications"],
+      "culture_traits": ["Genuine & exceptional", "Innovative", "Involved", "Creative passion"],
+      "interview_focus": ["Component Architecture & UI Engineering", "Document/Image AI Concepts", "Object-Oriented Design", "Product Sense & Creativity"]
+    },
+    {
+      "name": "Salesforce",
+      "industry": "Enterprise CRM, Cloud Platforms & Agentic AI",
+      "tier": "Enterprise SaaS",
+      "description": "Pioneer in cloud CRM, enterprise automation, Agentforce AI assistants, and multi-tenant database architectures.",
+      "roles": ["Software Engineer", "Java Developer", "Full Stack Developer", "Data Analyst", "Cloud Engineer"],
+      "required_skills": ["Java", "JavaScript", "SQL", "Git", "REST APIs", "HTML"],
+      "preferred_skills": ["React", "Python", "AWS", "PostgreSQL", "Database Design", "Docker", "CI/CD"],
+      "keywords": ["cloud enterprise", "CRM workflows", "multi-tenant architecture", "database optimization", "API integration", "security"],
+      "culture_traits": ["Trust & Ohana", "Customer Success", "Innovation", "Equality"],
+      "interview_focus": ["Enterprise Architecture & Database Schema Design", "Object-Oriented Principles", "Web Standards & Integration APIs", "Values & Customer Success"]
+    },
+    {
+      "name": "Oracle",
+      "industry": "Database Systems, Cloud Infrastructure (OCI) & ERP",
+      "tier": "Enterprise SaaS",
+      "description": "Global enterprise leader in relational databases, Oracle Cloud Infrastructure (OCI), autonomous databases, and enterprise applications.",
+      "roles": ["Database Administrator", "Java Developer", "Cloud Engineer", "Backend Developer", "Software Engineer"],
+      "required_skills": ["SQL", "Java", "Database Design", "Git", "Linux", "Problem Solving"],
+      "preferred_skills": ["MySQL", "PostgreSQL", "Docker", "Kubernetes", "Terraform", "Python", "Networking"],
+      "keywords": ["database optimization", "high availability", "backup and recovery", "query tuning", "cloud infrastructure", "enterprise storage"],
+      "culture_traits": ["Technical rigor", "Mission-critical reliability", "Disciplined execution", "Customer commitment"],
+      "interview_focus": ["Advanced SQL & Database Internals", "Concurrency & Transaction Isolation (ACID)", "Cloud Infrastructure & Networking", "Core Java & Systems Programming"]
+    },
+    {
+      "name": "IBM",
+      "industry": "Hybrid Cloud, Enterprise AI (watsonx) & Consulting",
+      "tier": "Enterprise Consulting",
+      "description": "Century-old technology institution driving Red Hat OpenShift hybrid cloud platforms, enterprise quantum computing, and watsonx AI.",
+      "roles": ["DevOps Engineer", "Cloud Engineer", "AI/ML Engineer", "Data Scientist", "Software Engineer"],
+      "required_skills": ["Python", "Linux", "Git", "SQL", "REST APIs", "Problem Solving"],
+      "preferred_skills": ["Docker", "Kubernetes", "CI/CD", "Machine Learning", "AWS", "Scikit-learn", "Terraform"],
+      "keywords": ["hybrid cloud", "container orchestration", "enterprise AI", "automation", "security governance", "modernization"],
+      "culture_traits": ["Dedication to client success", "Innovation that matters", "Trust and personal responsibility"],
+      "interview_focus": ["Hybrid Cloud & Kubernetes/OpenShift", "Enterprise AI & Model Governance", "DevOps & CI/CD Pipelines", "Client Problem Framing"]
+    }
+  ]
+}

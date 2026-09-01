@@ -223,17 +223,18 @@ def split_sections(text: str) -> dict[str, str]:
 
 def extract_name(text: str, sections: Optional[dict[str, str]] = None) -> Optional[str]:
     """Guess the candidate name from the header and optional NER."""
-    header = "\n".join(text.split("\n")[:12])
+    header_lines = [line.strip(" |-") for line in text.split("\n")[:12] if line.strip(" |-")]
+    header = "\n".join(header_lines)
     nlp = get_nlp()
     if nlp is not None:
         doc = nlp(header[:1500])
         persons = [ent.text.strip() for ent in doc.ents if ent.label_ == "PERSON"]
         for person in persons:
-            if _looks_like_name(person):
-                return person
+            candidate = person.split("\n")[0].strip(" |-")
+            if _looks_like_name(candidate):
+                return candidate
 
-    for line in header.split("\n"):
-        candidate = line.strip(" |-")
+    for candidate in header_lines:
         if _looks_like_name(candidate):
             return candidate
     return None
@@ -386,7 +387,7 @@ def _detect_heading(line: str) -> Optional[str]:
 
 
 def _looks_like_name(value: str) -> bool:
-    if not value or _NAME_STOP.search(value) or EMAIL_RE.search(value) or URL_RE.search(value):
+    if not value or "\n" in value or "\r" in value or _NAME_STOP.search(value) or EMAIL_RE.search(value) or URL_RE.search(value):
         return False
     if any(ch.isdigit() for ch in value):
         return False

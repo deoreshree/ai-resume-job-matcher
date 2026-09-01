@@ -41,6 +41,8 @@ def build_html_report(analysis: dict[str, Any]) -> str:
     ats = analysis["ats"]
     insights = analysis["insights"]
     interview = analysis["interview"]
+    career_intel = analysis.get("career_intelligence") or {}
+
     components = match.get("components", {})
     component_rows = "".join(
         f"<tr><td>{escape(label)}</td><td>{components.get(key, 0):.1f}%</td><td>{match.get('weights', {}).get(key, 0) * 100:.0f}%</td></tr>"
@@ -52,13 +54,38 @@ def build_html_report(analysis: dict[str, Any]) -> str:
             "keywords": "Keyword Match",
         }.items()
     )
+
+    career_intel_section = ""
+    if career_intel:
+        level_info = career_intel.get("career_level", {})
+        top_roles = career_intel.get("role_recommendations", [])[:3]
+        top_companies = career_intel.get("company_matches", {}).get("all_matches", [])[:4]
+
+        roles_list = "".join(
+            f"<li><strong>{escape(r.get('title', ''))}</strong> — Estimated Fit: {r.get('overall_score', 0):.0f}%</li>"
+            for r in top_roles
+        )
+        companies_list = "".join(
+            f"<li><strong>{escape(c.get('name', ''))}</strong> ({escape(c.get('industry', ''))}) — Fit: {c.get('fit_score', 0):.0f}% ({escape(c.get('tier_label', ''))})</li>"
+            for c in top_companies
+        )
+
+        career_intel_section = f"""
+        <h2>AI Career &amp; Company Fit Intelligence</h2>
+        <p><strong>Estimated Career Level:</strong> {escape(level_info.get('level_title', 'General'))} (Confidence: {level_info.get('confidence_score', 80)}%)</p>
+        <p class='muted'>{escape(career_intel.get('career_summary', ''))}</p>
+        <h3>Top Recommended Roles</h3><ul>{roles_list}</ul>
+        <h3>Top Matching Companies</h3><ul>{companies_list}</ul>
+        """
+
     generated = datetime.now().strftime("%d %b %Y, %H:%M")
     return f"""<!doctype html>
 <html><head><meta charset='utf-8'><title>Resume Match Analysis</title>
-<style>body{{font-family:Arial,sans-serif;color:#172033;max-width:960px;margin:32px auto;line-height:1.5}}h1{{color:#123c69}}h2{{border-bottom:2px solid #dce7f4;padding-bottom:5px}}.hero{{background:#edf5ff;padding:18px;border-radius:10px}}.score{{font-size:32px;font-weight:bold;color:#137b5a}}table{{border-collapse:collapse;width:100%}}td,th{{padding:8px;border:1px solid #dbe4ee;text-align:left}}.muted{{color:#637083}}li{{margin:8px 0}}span{{color:#42556f}}</style></head>
+<style>body{{font-family:Arial,sans-serif;color:#172033;max-width:960px;margin:32px auto;line-height:1.5}}h1{{color:#123c69}}h2{{border-bottom:2px solid #dce7f4;padding-bottom:5px;margin-top:24px}}.hero{{background:#edf5ff;padding:18px;border-radius:10px}}.score{{font-size:32px;font-weight:bold;color:#137b5a}}table{{border-collapse:collapse;width:100%}}td,th{{padding:8px;border:1px solid #dbe4ee;text-align:left}}.muted{{color:#637083}}li{{margin:8px 0}}span{{color:#42556f}}</style></head>
 <body><h1>AI Resume &amp; Job Match Predictor</h1><p class='muted'>Generated {escape(generated)}. This analysis is advisory and should be reviewed for accuracy.</p>
 <section class='hero'><h2>Candidate &amp; target</h2><p><strong>Candidate:</strong> {escape(resume.get('name') or 'Not identified')}<br><strong>Target role:</strong> {escape(profile.get('title') or 'Custom role')}<br><span class='score'>Overall match: {match.get('overall_score', 0):.1f}%</span><br><strong>ATS score:</strong> {ats.get('score', 0):.1f}/100</p></section>
 <h2>Score breakdown</h2><table><tr><th>Component</th><th>Score</th><th>Weight</th></tr>{component_rows}</table>
+{career_intel_section}
 <h2>Skills</h2><h3>Evidence found</h3>{_items(match.get('skill_match', {}).get('matching_skills', []))}<h3>Skill gaps</h3>{_items(match.get('skill_match', {}).get('missing_skills', []))}
 <h2>ATS analysis</h2><p><strong>Score:</strong> {ats.get('score', 0):.1f}/100</p><h3>Recommendations</h3>{_items(ats.get('recommendations', []))}
 <h2>Recommendations</h2><h3>Strengths</h3>{_items(insights.get('strengths', []))}<h3>Improvements</h3>{_items(insights.get('improvements', []))}<h3>Project improvements</h3>{_items(insights.get('project_suggestions', []))}

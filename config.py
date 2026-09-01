@@ -14,6 +14,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 DATA_DIR = PROJECT_ROOT / "data"
 JOB_ROLES_PATH = DATA_DIR / "job_roles.json"
 SKILLS_PATH = DATA_DIR / "skills.json"
+COMPANIES_PATH = DATA_DIR / "companies.json"
 
 MAX_UPLOAD_MB = 8
 ALLOWED_RESUME_EXTENSIONS = (".pdf", ".docx")

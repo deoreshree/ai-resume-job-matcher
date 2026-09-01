@@ -15,6 +15,10 @@ from config import MAX_UPLOAD_MB
 from genai.interview_generator import generate_interview_pack
 from genai.resume_advisor import advise_resume
 from modules.ats_analyzer import analyze_ats
+from modules.career_intelligence import (
+    analyze_career_intelligence,
+    build_company_interview_questions,
+)
 from modules.job_analyzer import analyze_job_description, get_job_profile, load_job_roles
 from modules.matcher import match_resume_to_job
 from modules.recommendation_engine import build_insights
@@ -34,6 +38,7 @@ def _run_analysis(file_bytes: bytes, filename: str, profile: dict[str, Any]) -> 
     ats = analyze_ats(resume, profile)
     insights = build_insights(resume, profile, match)
     insights["ats_suggestions"] = ats["recommendations"]
+    career_intel = analyze_career_intelligence(resume, profile, match, ats)
     return {
         "resume": resume,
         "job_profile": profile,
@@ -42,6 +47,7 @@ def _run_analysis(file_bytes: bytes, filename: str, profile: dict[str, Any]) -> 
         "insights": insights,
         "advisor": advise_resume(resume, profile, match),
         "interview": generate_interview_pack(resume, profile, match),
+        "career_intelligence": career_intel,
     }
 
 
@@ -88,6 +94,19 @@ def analyze():
         return jsonify({"error": str(exc)}), 400
 
 
+@app.post("/api/company-interview")
+def company_interview():
+    """Generate company-specific practice questions based on candidate profile."""
+    payload = request.get_json(silent=True) or {}
+    company_name = payload.get("company", "")
+    role_title = payload.get("role", "")
+    resume = payload.get("resume") or {}
+    if not company_name or not role_title:
+        return jsonify({"error": "Company name and role title are required."}), 400
+    questions = build_company_interview_questions(resume, company_name, role_title)
+    return jsonify({"questions": questions})
+
+
 @app.post("/api/report")
 def report():
     """Create an HTML report from the current browser analysis without server storage."""
@@ -115,13 +134,10 @@ def not_found(_: Exception):
 
 
 if __name__ == "__main__":
-    # Local development server configuration
-    # For production, use: gunicorn app:app
     port = int(os.getenv("PORT", 5000))
     debug = os.getenv("FLASK_ENV") == "development"
-    
     app.run(
-        host="0.0.0.0",  # Listen on all interfaces for containers/VMs
+        host="0.0.0.0",
         port=port,
         debug=debug,
     )
