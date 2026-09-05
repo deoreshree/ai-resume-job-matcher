@@ -17,7 +17,7 @@ SKILLS_PATH = DATA_DIR / "skills.json"
 COMPANIES_PATH = DATA_DIR / "companies.json"
 
 MAX_UPLOAD_MB = 8
-ALLOWED_RESUME_EXTENSIONS = (".pdf", ".docx")
+ALLOWED_RESUME_EXTENSIONS = (".pdf", ".docx", ".txt")
 
 SPACY_MODEL = os.getenv("SPACY_MODEL", "en_core_web_sm")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")

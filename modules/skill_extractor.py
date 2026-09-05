@@ -56,15 +56,21 @@ def normalize_skill(value: str) -> str:
     return skill_lookup().get(cleaned.casefold(), cleaned)
 
 
-def _contains_term(text: str, term: str) -> bool:
+def _find_term(text: str, term: str) -> Optional[str]:
     """Match an alias without turning abbreviations such as SQL into substrings."""
     term = term.strip()
     if not term:
-        return False
-    if term == " c ":
-        return bool(re.search(r"(?<![A-Za-z0-9+#])c(?![A-Za-z0-9+#])", text, re.IGNORECASE))
+        return None
+    if term.lower() == "c":
+        match = re.search(r"(?<![A-Za-z0-9+#])c(?![A-Za-z0-9+#])", text, re.IGNORECASE)
+        return match.group(0) if match else None
     pattern = r"(?<![A-Za-z0-9+#])" + re.escape(term) + r"(?![A-Za-z0-9+#])"
-    return bool(re.search(pattern, text, re.IGNORECASE))
+    match = re.search(pattern, text, re.IGNORECASE)
+    return match.group(0) if match else None
+
+
+def _contains_term(text: str, term: str) -> bool:
+    return _find_term(text, term) is not None
 
 
 def extract_skills(text: str) -> dict[str, Any]:
@@ -74,28 +80,33 @@ def extract_skills(text: str) -> dict[str, Any]:
     tool merely because it is commonly used with another detected skill.
     """
     source = text or ""
-    by_category: dict[str, list[str]] = {}
+    catalog = load_skill_catalog()
+    by_category: dict[str, list[str]] = {category: [] for category in catalog}
     matched_aliases: dict[str, str] = {}
     skills: list[str] = []
 
-    for category, catalog_skills in load_skill_catalog().items():
+    for category, catalog_skills in catalog.items():
         found: list[str] = []
         for skill in catalog_skills:
             for alias in sorted(skill["aliases"], key=len, reverse=True):
-                if _contains_term(source, alias):
+                matched_str = _find_term(source, alias)
+                if matched_str is not None:
                     name = skill["name"]
                     if name not in skills:
                         skills.append(name)
                     if name not in found:
                         found.append(name)
-                    matched_aliases[name] = alias
+                    matched_aliases[name] = matched_str
                     break
-        if found:
-            by_category[category] = found
+        by_category[category] = found
+
+    # Filter out empty categories for by_category_active, but keep full categorized_skills
+    active_by_category = {cat: items for cat, items in by_category.items() if items}
 
     return {
         "skills": skills,
-        "by_category": by_category,
+        "by_category": active_by_category,
+        "categorized_skills": by_category,
         "matched_aliases": matched_aliases,
-        "catalog_count": sum(len(items) for items in load_skill_catalog().values()),
+        "catalog_count": sum(len(items) for items in catalog.values()),
     }

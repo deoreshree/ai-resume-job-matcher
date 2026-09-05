@@ -231,7 +231,7 @@ def analyze():
         if not uploaded.filename:
             return jsonify(
                 {
-                    "error": "Please choose a PDF or DOCX resume."
+                    "error": "Please choose a PDF, DOCX, or TXT resume."
                 }
             ), 400
 

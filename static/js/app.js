@@ -216,8 +216,8 @@ function initDropzone() {
 
 function handleFileSelected(file) {
   const ext = file.name.split(".").pop().toLowerCase();
-  if (!["pdf", "docx"].includes(ext)) {
-    showNotice("Please upload a valid .PDF or .DOCX resume document.", "error");
+  if (!["pdf", "docx", "txt"].includes(ext)) {
+    showNotice("Please upload a valid .PDF, .DOCX, or .TXT resume document.", "error");
     return;
   }
   if (file.size > 8 * 1024 * 1024) {
@@ -1284,8 +1284,22 @@ function renderResumeAnalysis(resume) {
   const container = byId("resume-content");
   if (!container || !resume) return;
 
-  const contact = resume.contact || {};
-  const skillsByCategory = resume.skills_by_category || {};
+  const candidate = resume.candidate || resume.contact || resume.personal_information || {};
+  let skillsByCategory = {};
+  if (resume.skills && typeof resume.skills === "object" && !Array.isArray(resume.skills)) {
+    skillsByCategory = resume.skills;
+  } else {
+    skillsByCategory = resume.skills_by_category || resume.skill_details?.by_category || {};
+  }
+  // Filter out empty arrays for display
+  const activeSkillsCategories = Object.fromEntries(
+    Object.entries(skillsByCategory).filter(([_, items]) => Array.isArray(items) && items.length > 0)
+  );
+
+  const totalSkillsCount = Array.isArray(resume.skills)
+    ? resume.skills.length
+    : (resume.skills_list?.length || Object.values(activeSkillsCategories).flat().length);
+
   const experiences = resume.experience || [];
   const projects = resume.projects || [];
   const education = resume.education || [];
@@ -1302,33 +1316,33 @@ function renderResumeAnalysis(resume) {
         <div class="contact-table">
           <div class="contact-row">
             <span class="contact-label">Full Name:</span>
-            <strong class="contact-value">${escapeHtml(resume.name || "Candidate")}</strong>
-            <button class="btn-copy" type="button" onclick="copyText('${escapeHtml(resume.name || "")}', this)">Copy</button>
+            <strong class="contact-value">${escapeHtml(candidate.name || resume.name || "Candidate")}</strong>
+            <button class="btn-copy" type="button" onclick="copyText('${escapeHtml(candidate.name || resume.name || "")}', this)">Copy</button>
           </div>
           <div class="contact-row">
-            <span class="contact-label">Target Title:</span>
-            <span class="contact-value">${escapeHtml(resume.title || "Not stated")}</span>
+            <span class="contact-label">Location:</span>
+            <span class="contact-value">${escapeHtml(candidate.location || resume.location || "Not stated")}</span>
             <span></span>
           </div>
           <div class="contact-row">
             <span class="contact-label">Email:</span>
-            <span class="contact-value">${contact.email ? `<a href="mailto:${escapeHtml(contact.email)}">${escapeHtml(contact.email)}</a>` : '<span class="text-muted">Not detected</span>'}</span>
-            ${contact.email ? `<button class="btn-copy" type="button" onclick="copyText('${escapeHtml(contact.email)}', this)">Copy</button>` : "<span></span>"}
+            <span class="contact-value">${(candidate.email || resume.email) ? `<a href="mailto:${escapeHtml(candidate.email || resume.email)}">${escapeHtml(candidate.email || resume.email)}</a>` : '<span class="text-muted">Not detected</span>'}</span>
+            ${(candidate.email || resume.email) ? `<button class="btn-copy" type="button" onclick="copyText('${escapeHtml(candidate.email || resume.email)}', this)">Copy</button>` : "<span></span>"}
           </div>
           <div class="contact-row">
             <span class="contact-label">Phone:</span>
-            <span class="contact-value">${contact.phone ? `<a href="tel:${escapeHtml(contact.phone)}">${escapeHtml(contact.phone)}</a>` : '<span class="text-muted">Not detected</span>'}</span>
-            ${contact.phone ? `<button class="btn-copy" type="button" onclick="copyText('${escapeHtml(contact.phone)}', this)">Copy</button>` : "<span></span>"}
+            <span class="contact-value">${(candidate.phone || resume.phone) ? `<a href="tel:${escapeHtml(candidate.phone || resume.phone)}">${escapeHtml(candidate.phone || resume.phone)}</a>` : '<span class="text-muted">Not detected</span>'}</span>
+            ${(candidate.phone || resume.phone) ? `<button class="btn-copy" type="button" onclick="copyText('${escapeHtml(candidate.phone || resume.phone)}', this)">Copy</button>` : "<span></span>"}
           </div>
           <div class="contact-row">
             <span class="contact-label">LinkedIn:</span>
-            <span class="contact-value">${contact.linkedin ? `<a href="${escapeHtml(contact.linkedin)}" target="_blank" rel="noopener">${escapeHtml(contact.linkedin)}</a>` : '<span class="text-muted">Not detected</span>'}</span>
-            ${contact.linkedin ? `<button class="btn-copy" type="button" onclick="copyText('${escapeHtml(contact.linkedin)}', this)">Copy</button>` : "<span></span>"}
+            <span class="contact-value">${(candidate.linkedin || resume.linkedin) ? `<a href="${escapeHtml(candidate.linkedin || resume.linkedin)}" target="_blank" rel="noopener">${escapeHtml(candidate.linkedin || resume.linkedin)}</a>` : '<span class="text-muted">Not detected</span>'}</span>
+            ${(candidate.linkedin || resume.linkedin) ? `<button class="btn-copy" type="button" onclick="copyText('${escapeHtml(candidate.linkedin || resume.linkedin)}', this)">Copy</button>` : "<span></span>"}
           </div>
           <div class="contact-row">
             <span class="contact-label">GitHub:</span>
-            <span class="contact-value">${contact.github ? `<a href="${escapeHtml(contact.github)}" target="_blank" rel="noopener">${escapeHtml(contact.github)}</a>` : '<span class="text-muted">Not detected</span>'}</span>
-            ${contact.github ? `<button class="btn-copy" type="button" onclick="copyText('${escapeHtml(contact.github)}', this)">Copy</button>` : "<span></span>"}
+            <span class="contact-value">${(candidate.github || resume.github) ? `<a href="${escapeHtml(candidate.github || resume.github)}" target="_blank" rel="noopener">${escapeHtml(candidate.github || resume.github)}</a>` : '<span class="text-muted">Not detected</span>'}</span>
+            ${(candidate.github || resume.github) ? `<button class="btn-copy" type="button" onclick="copyText('${escapeHtml(candidate.github || resume.github)}', this)">Copy</button>` : "<span></span>"}
           </div>
         </div>
       </div>
@@ -1337,16 +1351,16 @@ function renderResumeAnalysis(resume) {
       <div class="info-card">
         <h3>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-          Extracted Skills by Category (${resume.skills?.length || 0})
+          Extracted Skills by Category (${totalSkillsCount})
         </h3>
         <div class="skills-matrix">
           ${
-            Object.keys(skillsByCategory).length
-              ? Object.entries(skillsByCategory)
+            Object.keys(activeSkillsCategories).length
+              ? Object.entries(activeSkillsCategories)
                   .map(
                     ([cat, items]) => `
                 <div class="matrix-row">
-                  <span class="matrix-category">${escapeHtml(cat)} (${items.length})</span>
+                  <span class="matrix-category">${escapeHtml(cat.replace(/_/g, " ").toUpperCase())} (${items.length})</span>
                   <div class="chips-container">
                     ${items.map((s) => `<span class="skill-chip neutral">${escapeHtml(s)}</span>`).join("")}
                   </div>
@@ -1376,11 +1390,12 @@ function renderResumeAnalysis(resume) {
                   (exp) => `
               <div class="timeline-card">
                 <div class="timeline-header">
-                  <h4 class="timeline-title">${escapeHtml(exp.title || "Position")}</h4>
-                  ${exp.duration ? `<span class="timeline-duration">${escapeHtml(exp.duration)}</span>` : ""}
+                  <h4 class="timeline-title">${escapeHtml(exp.job_title || exp.title || "Position")}</h4>
+                  <span class="timeline-duration">${escapeHtml((exp.start_date || exp.end_date) ? `${exp.start_date || ""} - ${exp.end_date || "Present"}` : (exp.duration || ""))}</span>
                 </div>
-                <div class="timeline-org">${escapeHtml(exp.organization || "Company")}</div>
-                ${exp.bullets?.length ? `<ul class="timeline-bullets">${exp.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}</ul>` : ""}
+                <div class="timeline-org">${escapeHtml(exp.company || exp.organization || "Company")} ${exp.location ? `&bull; ${escapeHtml(exp.location)}` : ""}</div>
+                ${(exp.description || exp.bullets)?.length ? `<ul class="timeline-bullets">${(exp.description || exp.bullets).map((b) => `<li>${escapeHtml(b)}</li>`).join("")}</ul>` : ""}
+                ${exp.technologies?.length ? `<div class="chips-container" style="margin-top: 10px;">${exp.technologies.map((t) => `<span class="skill-chip neutral" style="font-size:11px; padding:2px 6px;">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
               </div>
             `
                 )
@@ -1405,9 +1420,11 @@ function renderResumeAnalysis(resume) {
                 .map(
                   (proj) => `
               <div class="timeline-card">
-                <h4 class="timeline-title" style="margin-bottom: 8px;">${escapeHtml(proj.name || "Project")}</h4>
+                <h4 class="timeline-title" style="margin-bottom: 8px;">${escapeHtml(proj.name || proj.title || "Project")}</h4>
+                ${proj.description ? `<p style="font-size:13px; color:#475569; margin-bottom:10px;">${escapeHtml(proj.description)}</p>` : ""}
                 ${proj.technologies?.length ? `<div class="chips-container" style="margin-bottom: 10px;">${proj.technologies.map((t) => `<span class="skill-chip neutral">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
-                ${proj.bullets?.length ? `<ul class="timeline-bullets">${proj.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}</ul>` : ""}
+                ${(proj.bullets || [])?.length ? `<ul class="timeline-bullets">${proj.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}</ul>` : ""}
+                ${proj.link ? `<div style="margin-top:8px; font-size:12px;"><a href="${escapeHtml(proj.link)}" target="_blank" rel="noopener">🔗 ${escapeHtml(proj.link)}</a></div>` : ""}
               </div>
             `
                 )
@@ -1433,10 +1450,10 @@ function renderResumeAnalysis(resume) {
                   (edu) => `
               <div class="timeline-card">
                 <div class="timeline-header">
-                  <h4 class="timeline-title">${escapeHtml(edu.degree || edu.raw || "Degree")}</h4>
-                  ${edu.year ? `<span class="timeline-duration">${escapeHtml(edu.year)}</span>` : ""}
+                  <h4 class="timeline-title">${escapeHtml(edu.degree || edu.raw || "Degree")}${edu.field ? ` in ${escapeHtml(edu.field)}` : ""}</h4>
+                  <span class="timeline-duration">${escapeHtml((edu.start_date || edu.end_date) ? `${edu.start_date || ""} - ${edu.end_date || ""}` : (edu.year || ""))}</span>
                 </div>
-                <div class="timeline-org">${escapeHtml(edu.institution || "")}</div>
+                <div class="timeline-org">${escapeHtml(edu.institution || "")} ${edu.location ? `&bull; ${escapeHtml(edu.location)}` : ""} ${edu.percentage_or_cgpa ? `&bull; <strong>${escapeHtml(edu.percentage_or_cgpa)}</strong>` : ""}</div>
               </div>
             `
                 )

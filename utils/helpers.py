@@ -122,3 +122,69 @@ def estimate_years_of_experience(text: str) -> float:
 def find_degree(text: str) -> Optional[str]:
     match = DEGREE_RE.search(text or "")
     return match.group(0).strip() if match else None
+
+
+def find_field_of_study(text: str) -> Optional[str]:
+    """Identify specialization or field of study (e.g. Computer Science, AI)."""
+    if not text:
+        return None
+    patterns = [
+        r"(?:in|of)\s+([A-Z][A-Za-z\s&,]{3,35})(?=\s*[\n\-,]|\s*(?:19|20)\d{2}|$)",
+        r"\b(Computer Science|Software Engineering|Data Science|Artificial Intelligence|Machine Learning|Information Technology|Electrical Engineering|Mechanical Engineering|Business Administration|Cybersecurity|Mathematics|Physics)\b",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            captured = match.group(1 if "(" in pattern else 0).strip(" -,\t")
+            if captured and len(captured) > 2 and not re.search(r"University|College|Institute|School", captured, re.IGNORECASE):
+                return captured
+    return None
+
+
+def find_cgpa_or_percentage(text: str) -> Optional[str]:
+    """Extract CGPA/GPA or percentage without confusing dates or arbitrary numbers."""
+    if not text:
+        return None
+    cgpa_match = re.search(r"\b(?:CGPA|GPA|Score|Grade)?\s*[:\-]?\s*([0-4]\.\d{1,2}|[5-9]\.\d{1,2}|10(?:\.0)?)\s*(?:\/\s*(?:4|10))?\b", text, re.IGNORECASE)
+    if cgpa_match:
+        return cgpa_match.group(0).strip()
+    pct_match = re.search(r"\b([5-9]\d(?:\.\d{1,2})?|100)\s*%\b", text)
+    if pct_match:
+        return pct_match.group(0).strip()
+    return None
+
+
+def find_location(text: str) -> Optional[str]:
+    """Find location phrases such as City, State/Country or Remote."""
+    if not text:
+        return None
+    loc_match = re.search(r"\b([A-Z][A-Za-z\s]{2,20},\s*(?:[A-Z]{2}|[A-Z][A-Za-z\s]{2,20}))\b", text)
+    if loc_match:
+        return loc_match.group(1).strip()
+    if re.search(r"\bRemote\b", text, re.IGNORECASE):
+        return "Remote"
+    return None
+
+
+def parse_dates_from_block(text: str) -> tuple[Optional[str], Optional[str], Optional[str]]:
+    """Parse start date, end date, and overall duration string from a text block."""
+    if not text:
+        return None, None, None
+    match = DATE_RANGE_RE.search(text)
+    if match:
+        start_m = match.group("start_month") or ""
+        start_y = match.group("start_year") or ""
+        end_m = match.group("end_month") or ""
+        end_y = match.group("end_year") or ""
+        
+        start_str = f"{start_m} {start_y}".strip() if start_y else None
+        end_str = f"{end_m} {end_y}".strip() if end_y else None
+        duration_str = match.group(0).strip()
+        return start_str, end_str, duration_str
+    
+    # Fallback to single year or Present
+    year_match = re.search(r"\b((?:19|20)\d{2})\b", text)
+    if year_match:
+        return None, year_match.group(1), year_match.group(1)
+    return None, None, None
+

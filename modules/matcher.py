@@ -79,6 +79,7 @@ def match_keywords(resume_text: str, job_keywords: list[str]) -> dict[str, Any]:
     coverage = _coverage(matched, keywords)
     return {
         "matched_keywords": matched,
+        "matching_keywords": matched,
         "missing_keywords": missing,
         "coverage": round(coverage, 4),
         "score": round(coverage * 100, 2),
@@ -87,8 +88,17 @@ def match_keywords(resume_text: str, job_keywords: list[str]) -> dict[str, Any]:
 
 def match_resume_to_job(parsed_resume: dict[str, Any], job_profile: dict[str, Any]) -> dict[str, Any]:
     """Run all score components and return an auditable match result."""
+    # Ensure candidate skills array handles both list of strings and categorized dict
+    candidate_skills = parsed_resume.get("skills_list") or (
+        parsed_resume.get("skills") if isinstance(parsed_resume.get("skills"), list) else []
+    )
+    if not candidate_skills and isinstance(parsed_resume.get("skills"), dict):
+        candidate_skills = [
+            skill for items in parsed_resume["skills"].values() for skill in items
+        ]
+
     skills = match_skills(
-        parsed_resume.get("skills", []),
+        candidate_skills,
         job_profile.get("required_skills", []),
         job_profile.get("preferred_skills", []),
     )
@@ -116,12 +126,42 @@ def match_resume_to_job(parsed_resume: dict[str, Any], job_profile: dict[str, An
             "keywords": keywords["score"],
         }
     )
+
+    strengths: list[str] = []
+    weaknesses: list[str] = []
+    recommendations: list[str] = []
+
+    if skills["required_coverage"] >= 0.8:
+        strengths.append(f"Strong required skill coverage ({skills['required_coverage']*100:.0f}%).")
+    elif skills["missing_required"]:
+        weaknesses.append(f"Missing key required skills: {', '.join(skills['missing_required'][:4])}.")
+        recommendations.append(f"Prioritize building competency in {', '.join(skills['missing_required'][:2])}.")
+
+    if experience >= 1.0:
+        strengths.append("Meets or exceeds the stated minimum experience requirement.")
+    elif job_profile.get("minimum_experience"):
+        weaknesses.append(
+            f"Parsed experience ({parsed_resume.get('years_experience', 0):.1f} yrs) is below required {job_profile.get('minimum_experience')} yrs."
+        )
+
+    if education >= 1.0:
+        strengths.append("Educational credentials match target role expectations.")
+    elif job_profile.get("education"):
+        weaknesses.append("Educational background is partially aligned with target degree requirements.")
+
     return {
         **scoring,
+        "match_score": scoring["overall_score"],
+        "matched_skills": skills["matching_skills"],
+        "missing_skills": skills["missing_skills"],
+        "partially_matched_skills": skills["preferred_matches"],
         "skill_match": skills,
         "keyword_match": keywords,
         "semantic_similarity": round(semantic * 100, 2),
         "semantic_method": semantic_method(),
         "experience_score": round(experience * 100, 2),
         "education_score": round(education * 100, 2),
+        "strengths": strengths,
+        "weaknesses": weaknesses,
+        "recommendations": recommendations,
     }

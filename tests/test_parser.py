@@ -65,10 +65,11 @@ def test_clean_text_normalizes_bullets_and_whitespace():
 
 def test_validate_rejects_unsupported_and_empty():
     with pytest.raises(ResumeValidationError):
-        validate_resume_file("resume.txt", b"hello")
+        validate_resume_file("resume.xyz", b"hello")
     with pytest.raises(ResumeValidationError):
         validate_resume_file("resume.pdf", b"")
     validate_resume_file("resume.pdf", b"%PDF-fake")
+    validate_resume_file("resume.txt", b"Plain text resume")
 
 
 def test_parse_resume_text_extracts_identity_and_sections():
